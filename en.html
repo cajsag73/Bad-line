@@ -143,6 +143,7 @@ body{margin:0}
 const R=(a,b)=>a+Math.random()*(b-a), P=p=>Math.random()<p;
 let ctx,master,analyser,noise,wakeLock=null,raf=0,dropping=false;
 const active=new Map();
+let dropTimers=[];
 
 function init(){
   if(ctx) return;
@@ -372,12 +373,12 @@ function dropCall(mode,btn){
   // Codec breaking up for ~0.7 s, on top of whatever is playing
   let x=t;while(x<t+.7){burst(master,x,R(.01,.04),{f:R(800,3500),q:R(2,6),gain:R(.3,.6)});x+=R(.03,.08)}
   burst(master,t+.3,.35,{f:2000,f2:400,q:2,gain:.3,attack:.01});
-  setTimeout(()=>{stopAll(true);updateUI(true)},720);
+  dropTimers.push(setTimeout(()=>{stopAll(true);updateUI(true)},720));
   const s=t+.75+R(.6,1.1);let end=s;
   if(mode==='busy'){for(let i=0;i<10;i++)telTone(s+i*.5,425,.25);end=s+5}
   else if(mode==='sit'){for(let k=0;k<2;k++){const b=s+k*2.6;[950,1400,1800].forEach((f,i)=>telTone(b+i*.34,f,.33,.28))}end=s+3.6}
   else end=s;
-  setTimeout(()=>{dropping=false;document.querySelectorAll('.dropbtn').forEach(x=>x.classList.remove('busy'));updateUI()},(end-ctx.currentTime+.3)*1000);
+  dropTimers.push(setTimeout(()=>{dropping=false;document.querySelectorAll('.dropbtn').forEach(x=>x.classList.remove('busy'));updateUI()},(end-ctx.currentTime+.3)*1000));
   if(!raf)draw();
 }
 
@@ -396,13 +397,22 @@ function updateUI(keepStatus){
   if(!names.length)setStatus('Silent','Pick one or more sounds');
   else setStatus(names.length>1?`Mixing ${names.length} sounds`:'On air',names.join(' + '));
 }
-document.getElementById('stopBtn').addEventListener('click',()=>{if(ctx){stopAll();updateUI()}});
+// Stop all: close the whole audio engine so every sound dies instantly
+function hardStop(){
+  dropTimers.forEach(clearTimeout);dropTimers=[];
+  active.forEach(c=>clearInterval(c.timer));active.clear();
+  dropping=false;document.querySelectorAll('.dropbtn').forEach(x=>x.classList.remove('busy'));
+  if(ctx){const c=ctx;ctx=null;master=null;analyser=null;try{c.close()}catch(e){}}
+  updateUI();
+}
+document.getElementById('stopBtn').addEventListener('click',hardStop);
 document.querySelectorAll('.dropbtn').forEach(b=>b.addEventListener('click',()=>dropCall(b.dataset.mode,b)));
 document.getElementById('vol').addEventListener('input',e=>{if(master)master.gain.setTargetAtTime(+e.target.value,ctx.currentTime,.02)});
 
 const cv=document.getElementById('meter'),g2=cv.getContext('2d');
 function draw(){
   raf=requestAnimationFrame(draw);
+  if(!analyser){g2.clearRect(0,0,cv.width,cv.height);return}
   const w=cv.width,h=cv.height,data=new Uint8Array(analyser.frequencyBinCount);
   analyser.getByteFrequencyData(data);
   const cs=getComputedStyle(document.documentElement),acc=cs.getPropertyValue('--accent').trim(),ln=cs.getPropertyValue('--line').trim();
