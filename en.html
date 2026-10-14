@@ -84,6 +84,14 @@ body{margin:0}
 .seg input{accent-color:var(--accent);margin:0}
 .seg label:has(input:checked){border-color:var(--accent);background:var(--accent-soft)}
 .lang{align-self:flex-start;font-family:var(--mono);font-size:12px;color:var(--accent);text-decoration:none;border-bottom:1px solid currentColor;margin-bottom:6px}
+.drops{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media (max-width:520px){.drops{grid-template-columns:1fr}}
+.dropbtn{appearance:none;font:inherit;cursor:pointer;text-align:left;color:var(--ink);background:var(--panel);border:1.5px solid var(--accent);border-radius:6px;padding:16px;min-height:76px;display:flex;flex-direction:column;justify-content:center;gap:4px;transition:background .15s,transform .08s}
+.dropbtn:active{transform:scale(.98)}
+.dropbtn:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.dropbtn.busy{background:var(--accent);color:var(--accent-ink)}
+.dropbtn .t{font-family:var(--display);font-weight:700;font-size:26px;line-height:1;text-transform:uppercase}
+.dropbtn .s{font-family:var(--mono);font-size:12px;opacity:.75}
 .drop .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
 </style>
 </head>
@@ -100,13 +108,12 @@ body{margin:0}
 
   <section class="drop">
     <h2>Fake a dropped call</h2>
-    <p>Everything breaks up, cuts out dead, and then the tone you pick plays. Hang up right after.</p>
-    <div class="seg" role="radiogroup" aria-label="Type of drop">
-      <label for="d-dead"><input type="radio" name="drop" id="d-dead" value="dead" checked>Dead line (mobile)</label>
-      <label for="d-busy"><input type="radio" name="drop" id="d-busy" value="busy">Busy tone 425 Hz</label>
-      <label for="d-sit"><input type="radio" name="drop" id="d-sit" value="sit">Network error (three tones)</label>
+    <p>Tap an ending: everything breaks up, cuts out dead, then that ending plays. Hang up right after.</p>
+    <div class="drops" role="group" aria-label="Drop the call">
+      <button class="dropbtn" type="button" id="drop-dead" data-mode="dead"><span class="t">Dead line</span><span class="s">mobile, just silence</span></button>
+      <button class="dropbtn" type="button" id="drop-busy" data-mode="busy"><span class="t">Busy tone</span><span class="s">425 Hz</span></button>
+      <button class="dropbtn" type="button" id="drop-sit" data-mode="sit"><span class="t">Network error</span><span class="s">three rising tones</span></button>
     </div>
-    <div class="row"><button class="btn solid" id="dropBtn" type="button">Drop the call</button></div>
   </section>
 
   <section class="tips">
@@ -357,9 +364,9 @@ function telTone(t,f,dur,gain=.32){
   g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(gain,t+.004);g.gain.setValueAtTime(gain,t+dur-.004);g.gain.linearRampToValueAtTime(0,t+dur);
   o.connect(g).connect(ws).connect(hp).connect(bp).connect(master);o.start(t);o.stop(t+dur+.02);
 }
-function dropCall(){
+function dropCall(mode,btn){
   if(dropping)return;init();ctx.resume();
-  const mode=document.querySelector('input[name="drop"]:checked').value;
+  document.querySelectorAll('.dropbtn').forEach(x=>x.classList.toggle('busy',x===btn));
   dropping=true;setStatus('Dropping','Call breaking up…');
   const t=ctx.currentTime+.02;
   // Codec breaking up for ~0.7 s, on top of whatever is playing
@@ -370,7 +377,7 @@ function dropCall(){
   if(mode==='busy'){for(let i=0;i<10;i++)telTone(s+i*.5,425,.25);end=s+5}
   else if(mode==='sit'){for(let k=0;k<2;k++){const b=s+k*2.6;[950,1400,1800].forEach((f,i)=>telTone(b+i*.34,f,.33,.28))}end=s+3.6}
   else end=s;
-  setTimeout(()=>{dropping=false;updateUI()},(end-ctx.currentTime+.3)*1000);
+  setTimeout(()=>{dropping=false;document.querySelectorAll('.dropbtn').forEach(x=>x.classList.remove('busy'));updateUI()},(end-ctx.currentTime+.3)*1000);
   if(!raf)draw();
 }
 
@@ -390,7 +397,7 @@ function updateUI(keepStatus){
   else setStatus(names.length>1?`Mixing ${names.length} sounds`:'On air',names.join(' + '));
 }
 document.getElementById('stopBtn').addEventListener('click',()=>{if(ctx){stopAll();updateUI()}});
-document.getElementById('dropBtn').addEventListener('click',dropCall);
+document.querySelectorAll('.dropbtn').forEach(b=>b.addEventListener('click',()=>dropCall(b.dataset.mode,b)));
 document.getElementById('vol').addEventListener('input',e=>{if(master)master.gain.setTargetAtTime(+e.target.value,ctx.currentTime,.02)});
 
 const cv=document.getElementById('meter'),g2=cv.getContext('2d');
