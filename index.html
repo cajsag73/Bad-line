@@ -83,12 +83,14 @@ body{margin:0}
 .seg label{display:flex;align-items:center;gap:6px;border:1.5px solid var(--line);border-radius:6px;padding:8px 10px;font-size:14px;cursor:pointer;background:var(--panel)}
 .seg input{accent-color:var(--accent);margin:0}
 .seg label:has(input:checked){border-color:var(--accent);background:var(--accent-soft)}
+.lang{align-self:flex-start;font-family:var(--mono);font-size:12px;color:var(--accent);text-decoration:none;border-bottom:1px solid currentColor;margin-bottom:6px}
 .drop .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
+    <a class="lang" href="en.html" lang="en">In English</a>
     <div class="eyebrow">Soundboard för samtal du inte vill ha</div>
     <h1>Stör<span>sändaren</span></h1>
     <p class="lede">Tryck på ett eller flera ljud för att mixa dem. Tryck igen för att stänga av just det ljudet. Håll telefonen med samtalet nära högtalaren.</p>

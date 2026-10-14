@@ -12,5 +12,8 @@ Sex störningsljud som skapas live i webbläsaren med Web Audio, utan ljudfiler:
 
 Tryck på flera för att mixa. Alla ljud växlar oregelbundet mellan starkt, svagt och helt tyst. Knappen **Bryt samtalet** hackar sönder allt och avslutar med död linje, upptagetton eller nätverksfelston.
 
+## Språk
+`index.html` är på svenska, `en.html` är den engelska versionen (Call Jammer). Sidorna länkar till varandra.
+
 ## Använd
 Öppna `index.html` i mobilens webbläsare och håll telefonen med samtalet nära högtalaren. Ljud kan bara starta efter ett tryck.

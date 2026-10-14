@@ -1,0 +1,410 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Call Jammer</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root{padding-top:env(safe-area-inset-top,0px)}
+body{margin:0}
+/* Layout: signal-panel — header, two-column grid of channel tiles, fixed transmit bar at the bottom */
+:root{
+  --bg:#E8EBEE; --panel:#F6F7F8; --ink:#18202B; --muted:#5A6472; --line:#C8CED6;
+  --accent:#D2450F; --accent-ink:#FFFFFF; --accent-soft:rgba(210,69,15,.10);
+  --display:"Big Shoulders Display","Arial Narrow",Impact,sans-serif;
+  --body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#12161C; --panel:#1A2028; --ink:#E6E9ED; --muted:#8E98A5; --line:#2C3541;
+  --accent:#FF6B2C; --accent-ink:#140700; --accent-soft:rgba(255,107,44,.13); color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#12161C; --panel:#1A2028; --ink:#E6E9ED; --muted:#8E98A5; --line:#2C3541;
+  --accent:#FF6B2C; --accent-ink:#140700; --accent-soft:rgba(255,107,44,.13); color-scheme:dark }
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-block:20px calc(150px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:22px}
+header{display:flex;flex-direction:column;gap:6px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(44px,13vw,72px);line-height:.9;margin:0;letter-spacing:.01em;text-transform:uppercase;text-wrap:balance}
+h1 span{color:var(--accent)}
+.lede{margin:4px 0 0;color:var(--muted);max-width:52ch}
+
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+@media (min-width:620px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.tile{appearance:none;text-align:left;cursor:pointer;color:var(--ink);background:var(--panel);
+  border:1.5px solid var(--line);border-radius:6px;padding:14px 14px 12px;min-height:128px;
+  display:flex;flex-direction:column;gap:6px;font:inherit;transition:border-color .15s,background .15s,transform .08s}
+.tile:active{transform:scale(.98)}
+.tile:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.tile .ch{font-family:var(--mono);font-size:11px;color:var(--muted);display:flex;justify-content:space-between;gap:8px}
+.tile .name{font-family:var(--display);font-weight:700;font-size:26px;line-height:1;text-transform:uppercase;letter-spacing:.01em}
+.tile .what{font-size:13px;color:var(--muted);line-height:1.35}
+.tile .spec{margin-top:auto;font-family:var(--mono);font-size:11px;color:var(--muted)}
+.tile .live{display:none;color:var(--accent);font-weight:500}
+.tile[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.tile[aria-pressed="true"] .live{display:inline-flex;align-items:center;gap:5px}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--accent);animation:blink 1s steps(2) infinite}
+@keyframes blink{50%{opacity:.2}}
+
+.drop{display:flex;flex-direction:column;gap:10px;border:1.5px dashed var(--line);border-radius:6px;padding:14px}
+.drop h2,.tips h2{font-family:var(--display);font-weight:700;font-size:22px;text-transform:uppercase;margin:0;letter-spacing:.02em}
+.drop p{margin:0;color:var(--muted);font-size:14px}
+.btn{appearance:none;font:inherit;font-weight:600;cursor:pointer;border-radius:6px;padding:12px 16px;border:1.5px solid var(--ink);background:transparent;color:var(--ink)}
+.btn:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.btn.solid{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+
+.tips ul{margin:8px 0 0;padding-left:18px;display:flex;flex-direction:column;gap:6px;color:var(--muted);font-size:14px;max-width:62ch}
+.tips b{color:var(--ink);font-weight:600}
+
+.bar{position:fixed;left:0;right:0;bottom:0;background:var(--panel);border-top:1.5px solid var(--line);
+  padding:12px max(16px,env(safe-area-inset-right,0px)) calc(12px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.bar-in{max-width:720px;margin:0 auto;display:grid;grid-template-columns:1fr auto;gap:10px 14px;align-items:center}
+.status{min-width:0;display:flex;flex-direction:column;gap:2px}
+.status .lbl{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.status .now{font-family:var(--display);font-weight:700;font-size:20px;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+canvas{width:100%;height:26px;display:block}
+.vol{grid-column:1 / -1;display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:12px;color:var(--muted)}
+.vol input{flex:1;accent-color:var(--accent)}
+@media (prefers-reduced-motion:reduce){.dot{animation:none}.tile{transition:none}}
+</style>
+
+<style>
+:root{padding-top:env(safe-area-inset-top,0px)}
+body{margin:0}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg label{display:flex;align-items:center;gap:6px;border:1.5px solid var(--line);border-radius:6px;padding:8px 10px;font-size:14px;cursor:pointer;background:var(--panel)}
+.seg input{accent-color:var(--accent);margin:0}
+.seg label:has(input:checked){border-color:var(--accent);background:var(--accent-soft)}
+.lang{align-self:flex-start;font-family:var(--mono);font-size:12px;color:var(--accent);text-decoration:none;border-bottom:1px solid currentColor;margin-bottom:6px}
+.drop .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="lang" href="index.html" lang="sv">På svenska</a>
+    <div class="eyebrow">Soundboard for calls you don't want</div>
+    <h1>Call <span>Jammer</span></h1>
+    <p class="lede">Tap one or more sounds to mix them. Tap again to turn that sound off. Hold the phone with the call close to the speaker.</p>
+  </header>
+
+  <div class="grid" id="grid"></div>
+
+  <section class="drop">
+    <h2>Fake a dropped call</h2>
+    <p>Everything breaks up, cuts out dead, and then the tone you pick plays. Hang up right after.</p>
+    <div class="seg" role="radiogroup" aria-label="Type of drop">
+      <label for="d-dead"><input type="radio" name="drop" id="d-dead" value="dead" checked>Dead line (mobile)</label>
+      <label for="d-busy"><input type="radio" name="drop" id="d-busy" value="busy">Busy tone 425 Hz</label>
+      <label for="d-sit"><input type="radio" name="drop" id="d-sit" value="sit">Network error (three tones)</label>
+    </div>
+    <div class="row"><button class="btn solid" id="dropBtn" type="button">Drop the call</button></div>
+  </section>
+
+  <section class="tips">
+    <h2>How to make it convincing</h2>
+    <ul>
+      <li><b>Close to the mic.</b> Hold the phone with the call 10–20 cm from the speaker, with the microphone (bottom edge) facing the sound.</li>
+      <li><b>iPhone:</b> set Mic Mode to Standard in Control Center during the call, or a lot gets filtered out.</li>
+      <li><b>Dropped mobile calls</b> usually just go silent. The tones come from the old landline network and work best if you say you're on a landline.</li>
+      <li><b>Say a few words yourself.</b> "Hello? I can't hear you…" over the noise sells it.</li>
+    </ul>
+  </section>
+</div>
+
+<div class="bar">
+  <div class="bar-in">
+    <div class="status">
+      <span class="lbl" id="lbl">Silent</span>
+      <span class="now" id="now">Pick one or more sounds</span>
+      <canvas id="meter" width="600" height="52" aria-hidden="true"></canvas>
+    </div>
+    <button class="btn" id="stopBtn" type="button">Stop all</button>
+    <label class="vol" for="vol">Volume <input id="vol" type="range" min="0" max="1" step="0.01" value="0.85"></label>
+  </div>
+</div>
+
+<script>
+const R=(a,b)=>a+Math.random()*(b-a), P=p=>Math.random()<p;
+let ctx,master,analyser,noise,wakeLock=null,raf=0,dropping=false;
+const active=new Map();
+
+function init(){
+  if(ctx) return;
+  ctx=new (window.AudioContext||window.webkitAudioContext)();
+  master=ctx.createGain(); master.gain.value=+document.getElementById('vol').value;
+  const comp=ctx.createDynamicsCompressor(); comp.threshold.value=-8; comp.ratio.value=3; comp.knee.value=10;
+  analyser=ctx.createAnalyser(); analyser.fftSize=256;
+  master.connect(comp); comp.connect(analyser); analyser.connect(ctx.destination);
+  const b=ctx.createBuffer(1,ctx.sampleRate*2,ctx.sampleRate), d=b.getChannelData(0);
+  for(let i=0;i<d.length;i++) d[i]=Math.random()*2-1;
+  noise=b;
+}
+function noiseSrc(){const s=ctx.createBufferSource();s.buffer=noise;s.loop=true;return s}
+function env(g,t,a,peak,dur){g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(Math.max(peak,0.0002),t+a);g.gain.exponentialRampToValueAtTime(0.0001,t+a+dur)}
+function burst(out,t,dur,o={}){
+  const {type='bandpass',f=1000,q=1,gain=.5,attack=.003,f2=null}=o;
+  const s=noiseSrc(),fl=ctx.createBiquadFilter(),g=ctx.createGain();
+  fl.type=type;fl.Q.value=q;fl.frequency.setValueAtTime(f,t);if(f2)fl.frequency.exponentialRampToValueAtTime(f2,t+dur);
+  env(g,t,attack,gain,dur);s.connect(fl).connect(g).connect(out);s.start(t,Math.random()*1.5);s.stop(t+attack+dur+.05);
+}
+function tone(out,t,f,dur,o={}){
+  const {type='sine',gain=.3,attack=.005,f2=null}=o;
+  const osc=ctx.createOscillator(),g=ctx.createGain();
+  osc.type=type;osc.frequency.setValueAtTime(f,t);if(f2)osc.frequency.exponentialRampToValueAtTime(f2,t+dur);
+  env(g,t,attack,gain,dur);osc.connect(g).connect(out);osc.start(t);osc.stop(t+attack+dur+.05);
+}
+function bed(out,nodes,{type='bandpass',f=1000,q=1,gain=.05}){
+  const s=noiseSrc(),fl=ctx.createBiquadFilter(),g=ctx.createGain();
+  fl.type=type;fl.frequency.value=f;fl.Q.value=q;g.gain.value=gain;
+  s.connect(fl).connect(g).connect(out);s.start();nodes.push(s);return {fl,g};
+}
+function distCurve(k){const n=1024,c=new Float32Array(n);for(let i=0;i<n;i++){const x=i*2/n-1;c[i]=(1+k)*x/(1+k*Math.abs(x))}return c}
+function distBus(out,k,lp,gain){
+  const ws=ctx.createWaveShaper();ws.curve=distCurve(k);ws.oversample='2x';
+  const f=ctx.createBiquadFilter();f.type='lowpass';f.frequency.value=lp;
+  const g=ctx.createGain();g.gain.value=gain;ws.connect(f).connect(g).connect(out);return ws;
+}
+// Hard metallic impact: broadband crack + dull body + short rattle, nothing that rings
+function metal(out,t,{base=400,gain=.25,decay=.6}={}){
+  burst(out,t,R(.04,.09),{type:'highpass',f:1500,gain:gain*2,attack:.0005});
+  burst(out,t,Math.min(.2,decay*.25),{f:base,q:.8,gain:gain*2.5,attack:.001});
+  for(let i=0;i<Math.floor(R(2,6));i++)burst(out,t+R(.02,.2),R(.005,.015),{f:R(1500,5000),q:1.5,gain:gain*R(.5,1.2),attack:.0005});
+}
+// Body impact from low noise only (no pitch drop)
+function thud(out,t,{gain=.8,f=70}={}){
+  burst(out,t,.3,{type:'lowpass',f:f*2.5,q:.7,gain:gain*2.2,attack:.001});
+  burst(out,t,.12,{type:'lowpass',f:500,gain:gain*.7,attack:.001});
+}
+function crushCurve(steps){const n=2048,c=new Float32Array(n);for(let i=0;i<n;i++){const x=i*2/n-1;c[i]=Math.round(x*steps)/steps}return c}
+function clicks(out,t,n,gain=.6){for(let i=0;i<n;i++)burst(out,t+R(0,.25),.004,{type:'highpass',f:R(400,2500),gain:gain*R(.4,1),attack:.0005})}
+
+const scenes=[
+ {id:'tackning',name:'Bad reception',what:'The line breaks up into robot mush, digital bursts and sudden silence.',spec:'Voice codec in 20 ms frames',
+  setup(out,nodes){return{bed:bed(out,nodes,{f:1200,q:.5,gain:.03})}},
+  step(out,t,s){
+    const r=Math.random(),F=.02;
+    if(r<.28){// choppy frames: the line cutting in and out every 20 ms
+      const d=R(.2,1.1),f=R(500,2000);for(let x=t;x<t+d;x+=F)if(P(.55))burst(out,x,F*.9,{f,q:.7,gain:R(.2,.5),attack:.002});return d}
+    if(r<.48){// garbled robot speech: filter jumps frame by frame
+      const d=R(.25,1.2),ns=noiseSrc(),fl=ctx.createBiquadFilter(),g=ctx.createGain();
+      fl.type='bandpass';fl.Q.value=5;g.gain.setValueAtTime(0,t);
+      for(let x=t;x<t+d;x+=F){fl.frequency.setValueAtTime(R(300,3000),x);g.gain.setValueAtTime(P(.15)?0:R(.4,1.2),x)}
+      g.gain.setValueAtTime(0,t+d);ns.connect(fl).connect(g).connect(out);ns.start(t);ns.stop(t+d+.05);return d}
+    if(r<.60){// harsh digital burst
+      const d=R(.08,.35),ws=ctx.createWaveShaper();ws.curve=crushCurve(2);ws.connect(out);
+      burst(ws,t,d,{f:R(400,2500),q:.5,gain:.5,attack:.002});setTimeout(()=>ws.disconnect(),(d+1)*1000);return d+.02}
+    if(r<.80){// dead line
+      const d=R(.3,1.6);s.bed.g.gain.setValueAtTime(0,t);s.bed.g.gain.setValueAtTime(.03,t+d);return d}
+    if(r<.90){// stutter: one fragment repeated
+      const f=R(400,2000),len=R(.03,.08),n=Math.floor(R(3,8));for(let i=0;i<n;i++)burst(out,t+i*len*1.15,len,{f,q:2,gain:.45,attack:.003});return n*len*1.15}
+    return R(.1,.5);
+  }},
+ {id:'tag',name:'Train crash',what:'A train thunders into a rock face. Cars crumple, steel tears apart and the mountain caves in.',spec:'About 400 tonnes into granite',
+  setup(out,nodes,t0){
+    const rumble=bed(out,nodes,{type:'lowpass',f:120,q:.9,gain:.2});
+    const sub=ctx.createOscillator(),sg=ctx.createGain();sub.frequency.value=38;sg.gain.value=.3;sub.connect(sg).connect(out);sub.start();nodes.push(sub);
+    return{rumble,d:distBus(out,150,8000,.9),ph:'approach',until:t0+R(1.5,3.5),n:0};
+  },
+  step(out,t,s){
+    const tear=(x,dur,g)=>{let y=x;while(y<x+dur){burst(s.d,y,R(.01,.05),{f:R(800,5000),q:1,gain:g*R(.4,1),attack:.001});y+=R(.008,.04)}};
+    if(s.ph==='approach'){
+      s.rumble.g.gain.setTargetAtTime(1.4,t,.7);
+      for(let i=0;i<3;i++)burst(out,t+R(0,.15),.03,{type:'lowpass',f:900,gain:R(.2,.5)});
+      if(t>=s.until)s.ph='crash';return R(.08,.2);
+    }
+    if(s.ph==='crash'){
+      burst(s.d,t,1.6,{type:'lowpass',f:220,gain:3.5,attack:.001});
+      burst(s.d,t,.9,{f:1500,q:.4,gain:2.2,attack:.001});
+      burst(out,t,.15,{type:'highpass',f:1000,gain:1.8,attack:.0005});
+      metal(s.d,t,{base:400,gain:1.2});tear(t+.05,1.6,1.2);
+      s.ph='pile';s.n=Math.floor(R(5,12));return R(.2,.5);
+    }
+    if(s.ph==='pile'){
+      thud(s.d,t,{gain:R(1,1.7),f:R(40,70)});metal(s.d,t,{base:R(200,900),gain:R(.7,1.2)});tear(t,R(.2,.6),R(.6,1.1));
+      if(--s.n<=0){s.ph='rubble';s.until=t+R(2,4)}return R(.12,.6);
+    }
+    s.rumble.g.gain.setTargetAtTime(.25,t,.8);
+    for(let i=0;i<Math.floor(R(2,7));i++)burst(s.d,t+R(0,.25),R(.02,.08),{type:'lowpass',f:R(200,900),gain:R(.3,1.1),attack:.001});
+    if(P(.25))thud(s.d,t,{gain:R(.7,1.3),f:R(40,70)});
+    if(t>=s.until){s.ph='approach';s.until=t+R(1.5,3.5)}
+    return R(.05,.3);
+  }},
+ {id:'rymd',name:'Space station',what:'Digital interference: buzzing, shredded data and a crunching signal.',spec:'TDMA buzz 217 Hz · 2-bit signal',
+  setup(out,nodes){
+    // GSM-style buzz: noise chopped by a 217 Hz square wave
+    const ns=noiseSrc(),hp=ctx.createBiquadFilter(),chop=ctx.createGain(),bz=ctx.createGain();
+    hp.type='highpass';hp.frequency.value=900;chop.gain.value=0;bz.gain.value=0;
+    const sq=ctx.createOscillator();sq.type='square';sq.frequency.value=217;sq.connect(chop.gain);
+    ns.connect(hp).connect(chop).connect(bz).connect(out);ns.start();sq.start();nodes.push(ns,sq);
+    // Crushed data stream: noise through a jumping filter and a 2-bit quantizer
+    const ds=noiseSrc(),dfl=ctx.createBiquadFilter(),cr=ctx.createWaveShaper(),dg=ctx.createGain();
+    dfl.type='bandpass';dfl.Q.value=3;dfl.frequency.value=1500;cr.curve=crushCurve(2);dg.gain.value=0;
+    ds.connect(dfl).connect(cr).connect(dg).connect(out);ds.start();nodes.push(ds);
+    const hiss=bed(out,nodes,{type:'highpass',f:4000,gain:.04});
+    return{bz,dg,dfl,hiss};
+  },
+  step(out,t,s){
+    const r=Math.random();
+    if(r<.3){const d=R(.3,1.6);s.bz.gain.setValueAtTime(R(.3,.8),t);s.bz.gain.setValueAtTime(0,t+d);return P(.5)?d:R(.1,d)}
+    if(r<.55){const d=R(.2,1.2);s.dg.gain.setValueAtTime(R(.08,.22),t);
+      for(let x=t;x<t+d;x+=R(.012,.035))s.dfl.frequency.setValueAtTime(R(300,6000),x);
+      s.dg.gain.setValueAtTime(0,t+d);return P(.5)?d:R(.05,d)}
+    if(r<.68){const d=R(.15,.8);s.hiss.g.gain.setValueAtTime(0,t);s.bz.gain.setValueAtTime(0,t);s.dg.gain.setValueAtTime(0,t);s.hiss.g.gain.setValueAtTime(.04,t+d);return d}
+    if(r<.82){let x=t;const n=Math.floor(R(4,12)),len=R(.015,.05),f=R(800,4000);for(let i=0;i<n;i++){burst(out,x,len,{f,q:2,gain:.5,attack:.001});x+=len*R(1,1.6)}return x-t}
+    if(r<.92){clicks(out,t,Math.floor(R(3,10)),.6);return .2}
+    return R(.05,.4);
+  }},
+ {id:'metall',name:'Death metal',what:'Violent attacks of distortion, bass blasts and screams that come and go.',spec:'Tempo: none · Mercy: none',
+  setup(out,nodes,t0){return{d:distBus(out,2000,7000,.55),b:distBus(out,300,350,1.1),wild:true,until:t0+R(1.5,3)}},
+  step(out,t,s){
+    if(t>=s.until){s.wild=!s.wild;s.until=t+(s.wild?R(1.2,4):R(.25,1.4));if(!s.wild)return R(.25,1.2)}
+    if(!s.wild){if(P(.3))burst(s.d,t,R(.05,.2),{f:R(300,2500),gain:.3});return R(.1,.35)}
+    const r=Math.random();
+    if(r<.3){const n=Math.floor(R(5,10)),d=R(.1,.6),g=R(.2,.5);
+      for(let i=0;i<n;i++)tone(s.d,t,R(35,500),d,{type:'sawtooth',gain:g,attack:.002,f2:P(.5)?R(30,700):null});
+      burst(s.d,t,d,{f:R(200,3000),q:.5,gain:g*3})}
+    else if(r<.5){burst(s.b,t,R(.2,.6),{type:'lowpass',f:R(60,140),gain:3,attack:.001});burst(out,t,.08,{type:'highpass',f:1000,gain:.9,attack:.0005})}
+    else if(r<.65){burst(s.d,t,R(.3,1.2),{f:R(600,1500),f2:R(300,2500),q:1.5,gain:1.4,attack:.02})}
+    else if(r<.78){burst(s.d,t,R(.1,.5),{f:R(150,4000),q:.4,gain:1.2,attack:.002})}
+    else if(r<.88){metal(out,t,{base:R(300,1200),gain:.6});burst(out,t,R(.3,1),{type:'highpass',f:4000,gain:.5})}
+    else burst(out,t,R(.5,1.5),{f:R(700,1400),q:.8,gain:.8,attack:.1});
+    return R(.015,.18);
+  }},
+ {id:'storm',name:'Mountain storm',what:'Things get smashed and torn apart at full force.',spec:'Roof tiles · sheet metal · glass · timber',
+  setup(out){return{d:distBus(out,60,9000,1.1)}},
+  step(out,t,s){
+    const r=Math.random();let d;
+    if(r<.2){thud(s.d,t,{gain:R(.6,1.1),f:R(45,90)});burst(s.d,t,.06,{type:'highpass',f:800,gain:.6,attack:.0005});d=.3}
+    else if(r<.36){// glass shattering
+      burst(s.d,t,.08,{type:'highpass',f:2500,gain:1.1,attack:.0005});
+      const n=Math.floor(R(15,40));for(let i=0;i<n;i++)burst(s.d,t+R(.02,1.1)*Math.random(),R(.003,.012),{f:R(3000,9000),q:1.5,gain:R(.15,.6),attack:.0003});d=1}
+    else if(r<.52){// wood splintering
+      let x=t;const n=Math.floor(R(6,18));for(let i=0;i<n;i++){burst(s.d,x,R(.005,.03),{f:R(600,2500),q:1,gain:R(.4,1),attack:.0005});x+=R(.008,.05)}
+      thud(s.d,t,{gain:.5,f:70});d=x-t}
+    else if(r<.68){// sheet metal crunching and scraping
+      metal(s.d,t,{base:R(250,700),gain:.6});const e=R(.3,.9);
+      let x=t+.05;while(x<t+e){burst(s.d,x,R(.01,.04),{f:R(1000,4000),q:1.2,gain:R(.15,.5)});x+=R(.01,.05)}d=e}
+    else if(r<.80){// roof tiles hitting and breaking
+      let x=t;for(let i=0;i<Math.floor(R(2,5));i++){burst(s.d,x,.05,{f:R(800,1800),q:1,gain:R(.6,1.1),attack:.0005});
+        for(let k=0;k<6;k++)burst(s.d,x+R(.01,.15),.008,{f:R(1500,4000),q:1,gain:R(.2,.5)});x+=R(.08,.35)}d=x-t}
+    else if(r<.90){// something tumbling across the ground
+      let x=t,g=.7;const n=Math.floor(R(4,9));for(let i=0;i<n;i++){burst(s.d,x,.04,{type:'lowpass',f:R(500,1500),gain:g,attack:.001});x+=R(.08,.22);g*=R(.75,1)}d=x-t}
+    else{// big collapse
+      thud(s.d,t,{gain:1.2,f:50});metal(s.d,t,{base:300,gain:.7});
+      for(let i=0;i<25;i++)burst(s.d,t+R(0,1.2),R(.01,.05),{f:R(300,3000),q:1,gain:R(.2,.6)});d=1.2}
+    if(P(.35)){const x=t+R(0,d);burst(s.d,x,R(.1,.4),{f:R(500,3000),q:.4,gain:R(1.5,2.5),attack:.0008});thud(s.d,x,{gain:R(1,1.5),f:R(40,80)})}
+    return P(.5)?R(.02,d):d+R(0,.5);
+  }},
+ {id:'bygg',name:'Construction site',what:'Jackhammer, grinder, drill and collapsing scrap. Completely irregular.',spec:'No rhythm · no beeps',
+  setup(){return{}},
+  step(out,t){
+    const r=Math.random();let d;
+    if(r<.3){const n=Math.floor(R(5,35));let x=t;for(let i=0;i<n;i++){burst(out,x,.025,{type:'lowpass',f:R(1800,3000),gain:R(.3,.7)});x+=R(.03,.07)}d=x-t}
+    else if(r<.45){d=R(.8,2.5);burst(out,t,d,{f:R(3800,5000),q:1.5,gain:.45,attack:.12,f2:R(3000,5500)})}
+    else if(r<.58){d=R(.6,1.8);burst(out,t,d,{f:R(400,700),f2:R(900,1600),q:1.2,gain:.5,attack:.08});
+      let x=t;while(x<t+d){burst(out,x,.02,{type:'lowpass',f:1500,gain:R(.1,.35)});x+=R(.02,.09)}}
+    else if(r<.72){metal(out,t,{base:R(200,800),gain:.4,decay:.9});let x=t,g=.3;for(let i=0;i<5;i++){x+=R(.06,.25)*(1-i*.15);g*=.6;metal(out,x,{base:R(200,800),gain:g,decay:.3})}d=x-t}
+    else if(r<.86){const n=Math.floor(R(10,30));for(let i=0;i<n;i++)burst(out,t+R(0,1),R(.02,.08),{type:'lowpass',f:R(400,1500),gain:R(.2,.6)});d=1}
+    else{metal(out,t,{base:R(600,1500),gain:.3,decay:.25,n:3});thud(out,t,{gain:.4,f:90});d=.1}
+    return P(.35)?R(.05,d):d+R(0,.6);
+  }}
+];
+
+function startScene(sc){
+  const out=ctx.createGain();out.gain.value=.85;out.connect(master);
+  const nodes=[],t0=ctx.currentTime+.05,st=sc.setup(out,nodes,t0)||{};
+  let next=t0,nextDyn=t0+R(.5,2);
+  const timer=setInterval(()=>{
+    const h=ctx.currentTime+.25;
+    while(next<h)next+=Math.max(.01,sc.step(out,next,st));
+    while(nextDyn<h){const r=Math.random(),g=out.gain;
+      if(r<.2)g.setValueAtTime(0,nextDyn);
+      else if(r<.4)g.setValueAtTime(R(1.7,2.8),nextDyn);
+      else if(r<.56)g.setTargetAtTime(R(.12,.35),nextDyn,.06);
+      else g.setTargetAtTime(R(.6,1.1),nextDyn,.04);
+      nextDyn+=r<.2?R(.2,2.2):R(.15,2.5)}
+  },40);
+  active.set(sc.id,{sc,out,nodes,timer});
+}
+function stopScene(id,fast){
+  const c=active.get(id);if(!c)return;active.delete(id);clearInterval(c.timer);
+  const now=ctx.currentTime;c.out.gain.cancelScheduledValues(now);
+  if(fast)c.out.gain.setValueAtTime(0,now);else c.out.gain.setTargetAtTime(0,now,.05);
+  setTimeout(()=>{c.nodes.forEach(n=>{try{n.stop()}catch(e){}});c.out.disconnect()},fast?60:500);
+}
+function stopAll(fast){[...active.keys()].forEach(id=>stopScene(id,fast))}
+function toggle(sc){
+  init();ctx.resume();
+  if(active.has(sc.id))stopScene(sc.id);else startScene(sc);
+  updateUI();
+  try{if(active.size&&navigator.wakeLock&&!wakeLock)navigator.wakeLock.request('screen').then(w=>{wakeLock=w;w.addEventListener('release',()=>wakeLock=null)}).catch(()=>{})}catch(e){}
+  if(!raf)draw();
+}
+
+// Telephone-band colored tone: hard on/off, slight harmonics, 300–3400 Hz
+function telTone(t,f,dur,gain=.32){
+  const o=ctx.createOscillator(),g=ctx.createGain(),ws=ctx.createWaveShaper(),bp=ctx.createBiquadFilter(),hp=ctx.createBiquadFilter();
+  o.frequency.value=f;ws.curve=distCurve(2);bp.type='lowpass';bp.frequency.value=3400;hp.type='highpass';hp.frequency.value=300;
+  g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(gain,t+.004);g.gain.setValueAtTime(gain,t+dur-.004);g.gain.linearRampToValueAtTime(0,t+dur);
+  o.connect(g).connect(ws).connect(hp).connect(bp).connect(master);o.start(t);o.stop(t+dur+.02);
+}
+function dropCall(){
+  if(dropping)return;init();ctx.resume();
+  const mode=document.querySelector('input[name="drop"]:checked').value;
+  dropping=true;setStatus('Dropping','Call breaking up…');
+  const t=ctx.currentTime+.02;
+  // Codec breaking up for ~0.7 s, on top of whatever is playing
+  let x=t;while(x<t+.7){burst(master,x,R(.01,.04),{f:R(800,3500),q:R(2,6),gain:R(.3,.6)});x+=R(.03,.08)}
+  burst(master,t+.3,.35,{f:2000,f2:400,q:2,gain:.3,attack:.01});
+  setTimeout(()=>{stopAll(true);updateUI(true)},720);
+  const s=t+.75+R(.6,1.1);let end=s;
+  if(mode==='busy'){for(let i=0;i<10;i++)telTone(s+i*.5,425,.25);end=s+5}
+  else if(mode==='sit'){for(let k=0;k<2;k++){const b=s+k*2.6;[950,1400,1800].forEach((f,i)=>telTone(b+i*.34,f,.33,.28))}end=s+3.6}
+  else end=s;
+  setTimeout(()=>{dropping=false;updateUI()},(end-ctx.currentTime+.3)*1000);
+  if(!raf)draw();
+}
+
+const grid=document.getElementById('grid');
+scenes.forEach((sc,i)=>{
+  const b=document.createElement('button');b.type='button';b.className='tile';b.id='t-'+sc.id;b.setAttribute('aria-pressed','false');
+  b.innerHTML=`<span class="ch"><span>CHANNEL ${String(i+1).padStart(2,'0')}</span><span class="live"><span class="dot"></span>ON AIR</span></span>
+  <span class="name">${sc.name}</span><span class="what">${sc.what}</span><span class="spec">${sc.spec}</span>`;
+  b.addEventListener('click',()=>toggle(sc));grid.appendChild(b);
+});
+function setStatus(l,n){document.getElementById('lbl').textContent=l;document.getElementById('now').textContent=n}
+function updateUI(keepStatus){
+  document.querySelectorAll('.tile').forEach(t=>t.setAttribute('aria-pressed',String(active.has(t.id.slice(2)))));
+  if(keepStatus===true||dropping)return;
+  const names=[...active.values()].map(c=>c.sc.name);
+  if(!names.length)setStatus('Silent','Pick one or more sounds');
+  else setStatus(names.length>1?`Mixing ${names.length} sounds`:'On air',names.join(' + '));
+}
+document.getElementById('stopBtn').addEventListener('click',()=>{if(ctx){stopAll();updateUI()}});
+document.getElementById('dropBtn').addEventListener('click',dropCall);
+document.getElementById('vol').addEventListener('input',e=>{if(master)master.gain.setTargetAtTime(+e.target.value,ctx.currentTime,.02)});
+
+const cv=document.getElementById('meter'),g2=cv.getContext('2d');
+function draw(){
+  raf=requestAnimationFrame(draw);
+  const w=cv.width,h=cv.height,data=new Uint8Array(analyser.frequencyBinCount);
+  analyser.getByteFrequencyData(data);
+  const cs=getComputedStyle(document.documentElement),acc=cs.getPropertyValue('--accent').trim(),ln=cs.getPropertyValue('--line').trim();
+  g2.clearRect(0,0,w,h);const n=40,bw=w/n;
+  for(let i=0;i<n;i++){
+    const v=data[Math.floor(i*data.length/n*.7)]/255,bh=Math.max(3,v*h);
+    g2.fillStyle=v>.04?acc:ln;g2.fillRect(i*bw+2,h-bh,bw-4,bh);
+  }
+}
+</script>
+</body>
+</html>
