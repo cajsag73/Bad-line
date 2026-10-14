@@ -312,7 +312,7 @@ const scenes=[
     if(P(.35)){const x=t+R(0,d);burst(s.d,x,R(.1,.4),{f:R(500,3000),q:.4,gain:R(1.5,2.5),attack:.0008});thud(s.d,x,{gain:R(1,1.5),f:R(40,80)})}
     return P(.5)?R(.02,d):d+R(0,.5);
   }},
- {id:'bygg',name:'Construction site',what:'Jackhammer, violent hammer blows and metal grinding on metal. Completely irregular.',spec:'Jackhammer · hammer blows · metal on metal',
+ {id:'bygg',name:'Construction site',what:'Jackhammer, violent hammer blows and metal grinding on metal. Completely irregular.',spec:'No rhythm. No finesse.',
   setup(out){return{d:distBus(out,120,8000,1)}},
   step(out,t,s){
     const r=Math.random();let d;
