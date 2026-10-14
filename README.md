@@ -8,7 +8,7 @@ Sex störningsljud som skapas live i webbläsaren med Web Audio, utan ljudfiler:
 - **Rymdstation** – digitala störningar och sönderhackad signal
 - **Dödsmetall** – våldsamma attacker av distorsion utan takt
 - **Storm på fjället** – saker som krossas och bryts sönder
-- **Byggarbetsplats** – bilning, slip och skrot utan rytm
+- **Byggarbetsplats** – bilning, våldsamma hammarslag och metall mot metall
 
 Tryck på flera för att mixa. Alla ljud växlar oregelbundet mellan starkt, svagt och helt tyst. Knappen **Bryt samtalet** hackar sönder allt och avslutar med död linje, upptagetton eller nätverksfelston.
 
