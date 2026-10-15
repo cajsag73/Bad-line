@@ -86,4 +86,4 @@ När produktionsåtkomsten är godkänd skapar du en produktionsversion med samm
 ## Risker vid granskningen
 - **Namnet** byttes från Störsändaren till Dålig täckning, eftersom "störsändare" och "jammer" kunde få granskaren att tro att appen stör mobilnätet. Adressen och paket-ID:t innehåller fortfarande `storsandaren`, men det syns inte för användarna.
 - **Vilseledande beteende.** Google tillåter inte appar som lovar något de inte kan göra. Därför ska butikstexten alltid säga att det är ljud i högtalaren, inte riktiga störningar.
-- **Typsnitten** hämtas från Google Fonts. Det står i integritetspolicyn. Vill du att appen inte ska kontakta någon alls kan typsnittsfilerna (Big Shoulders Display och IBM Plex, fri licens) laddas ner och läggas i repot.
+- **Typsnitten** ligger inbäddade i appen (fri licens, se `licenser/`), så appen kontaktar ingen extern tjänst. Svaret "samlar inte in data" i datasäkerhetsformuläret stämmer därför.
