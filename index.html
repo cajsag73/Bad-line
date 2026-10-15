@@ -8,7 +8,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-<title>Störsändaren</title>
+<title>Dålig täckning</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -162,7 +162,7 @@ h1{font-size:clamp(56px,18vw,130px);line-height:.85;white-space:nowrap;padding-r
   <header class="brand">
     <button type="button" class="about-btn" id="aboutBtn" data-i18n="about">Om</button>
     <div class="brand-text">
-      <h1><span data-i18n="t1">Stör</span><span data-i18n="t2">sändaren</span></h1>
+      <h1><span data-i18n="t1">Dålig </span><span data-i18n="t2">täckning</span></h1>
       <div class="sub">
       <div class="langs" role="group" aria-label="Språk / Language">
         <button type="button" class="flag" data-lang="sv" aria-label="Svenska" aria-pressed="true"><svg viewBox="0 0 16 10" aria-hidden="true"><rect width="16" height="10" fill="#006AA7"/><rect x="5" width="2" height="10" fill="#FECC00"/><rect y="4" width="16" height="2" fill="#FECC00"/></svg></button>
@@ -282,7 +282,7 @@ function crushCurve(steps){const n=2048,c=new Float32Array(n);for(let i=0;i<n;i+
 function clicks(out,t,n,gain=.6){for(let i=0;i<n;i++)burst(out,t+R(0,.25),.004,{type:'highpass',f:R(400,2500),gain:gain*R(.4,1),attack:.0005})}
 
 const scenes=[
- {id:'tackning',name:'Dålig täckning',what:'Linjen hackar sönder i robotgröt, digitala smällar och tvär tystnad.',spec:'Talkodek i 20 ms-ramar',
+ {id:'tackning',name:'Hackig linje',what:'Linjen hackar sönder i robotgröt, digitala smällar och tvär tystnad.',spec:'Talkodek i 20 ms-ramar',
   setup(out,nodes){return{bed:bed(out,nodes,{f:1200,q:.5,gain:.03})}},
   step(out,t,s){
     const r=Math.random(),F=.02;
@@ -519,12 +519,12 @@ function dropCall(mode,btn){
 }
 
 const I18N={
- sv:{title:'Störsändaren',eyebrow:'Soundboard för samtal du inte vill ha',t1:'Stör',t2:'sändaren',vol:'Volym',drop:'Fejka avbrott',busy:'Upptagetton',sit:'Nätverksfel',sitS:'tre stigande toner',about:'Om',aboutTitle:'Så funkar det',close:'Stäng',madeBy:'Gjord av',contact:'Kontakt',privacy:'Integritetspolicy',version:'Version',disclaimer:'Appen spelar bara upp ljud i högtalaren. Den påverkar inte telefonnätet, samtal eller andra enheter.',
+ sv:{title:'Dålig täckning',eyebrow:'Soundboard för samtal du inte vill ha',t1:'Dålig ',t2:'täckning',vol:'Volym',drop:'Fejka avbrott',busy:'Upptagetton',sit:'Nätverksfel',sitS:'tre stigande toner',about:'Om',aboutTitle:'Så funkar det',close:'Stäng',madeBy:'Gjord av',contact:'Kontakt',privacy:'Integritetspolicy',version:'Version',disclaimer:'Appen spelar bara upp ljud i högtalaren. Den påverkar inte telefonnätet, samtal eller andra enheter.',
    silent:'Tyst',pick:'Välj ett eller flera ljud',onair:'Sänder nu',mixing:n=>`Mixar ${n} ljud`,dropping:'Avbrott',breaking:'Samtalet bryts…',ch:'KANAL',live:'SÄNDER'},
- en:{title:'Call Jammer',eyebrow:"Soundboard for calls you don't want",t1:'Call ',t2:'Jammer',vol:'Volume',drop:'Fake a dropped call',busy:'Busy tone',sit:'Network error',sitS:'three rising tones',about:'About',aboutTitle:'How it works',close:'Close',madeBy:'Made by',contact:'Contact',privacy:'Privacy policy',version:'Version',disclaimer:'The app only plays sound through the speaker. It does not affect the phone network, calls or other devices.',
+ en:{title:'Bad Line',eyebrow:"Soundboard for calls you don't want",t1:'Bad ',t2:'Line',vol:'Volume',drop:'Fake a dropped call',busy:'Busy tone',sit:'Network error',sitS:'three rising tones',about:'About',aboutTitle:'How it works',close:'Close',madeBy:'Made by',contact:'Contact',privacy:'Privacy policy',version:'Version',disclaimer:'The app only plays sound through the speaker. It does not affect the phone network, calls or other devices.',
    silent:'Silent',pick:'Pick one or more sounds',onair:'On air',mixing:n=>`Mixing ${n} sounds`,dropping:'Dropping',breaking:'Call breaking up…',ch:'CHANNEL',live:'ON AIR'}
 };
-const SCENE_EN={"tackning": {"name": "Bad reception", "what": "The line breaks up into robot mush, digital bursts and sudden silence.", "spec": "Voice codec in 20 ms frames"}, "tag": {"name": "Train crash", "what": "A train crashes at full speed. Cars crumple, sheet metal folds and steel tears apart.", "spec": "4,000 tonnes of metal at 120 km/h"}, "rymd": {"name": "Space station", "what": "Digital interference and a shredded alien voice talking in the background.", "spec": "TDMA buzz 217 Hz · 3-bit voice"}, "metall": {"name": "Death metal", "what": "Violent attacks of distortion, bass blasts and screams that come and go.", "spec": "Tempo: none · Mercy: none"}, "storm": {"name": "Hailstorm", "what": "Things get smashed and torn apart at full force.", "spec": "Roof tiles · sheet metal · glass · timber"}, "bygg": {"name": "Construction site", "what": "Jackhammer, power drill, violent hammer blows and metal grinding on metal. Completely irregular.", "spec": "No rhythm. No finesse."}};
+const SCENE_EN={"tackning": {"name": "Choppy line", "what": "The line breaks up into robot mush, digital bursts and sudden silence.", "spec": "Voice codec in 20 ms frames"}, "tag": {"name": "Train crash", "what": "A train crashes at full speed. Cars crumple, sheet metal folds and steel tears apart.", "spec": "4,000 tonnes of metal at 120 km/h"}, "rymd": {"name": "Space station", "what": "Digital interference and a shredded alien voice talking in the background.", "spec": "TDMA buzz 217 Hz · 3-bit voice"}, "metall": {"name": "Death metal", "what": "Violent attacks of distortion, bass blasts and screams that come and go.", "spec": "Tempo: none · Mercy: none"}, "storm": {"name": "Hailstorm", "what": "Things get smashed and torn apart at full force.", "spec": "Roof tiles · sheet metal · glass · timber"}, "bygg": {"name": "Construction site", "what": "Jackhammer, power drill, violent hammer blows and metal grinding on metal. Completely irregular.", "spec": "No rhythm. No finesse."}};
 scenes.forEach(sc=>{sc.i18n={sv:{name:sc.name,what:sc.what,spec:sc.spec},en:SCENE_EN[sc.id]}});
 let lang='sv';
 try{const v=localStorage.getItem('lang');if(v==='sv'||v==='en')lang=v;else if(!/^sv\b/i.test(navigator.language||'sv'))lang='en'}catch(e){}
@@ -595,13 +595,13 @@ document.querySelectorAll('.dropbtn').forEach(b=>b.addEventListener('click',()=>
 document.getElementById('vol').addEventListener('input',e=>{if(master)master.gain.setTargetAtTime(+e.target.value,ctx.currentTime,.02)});
 
 // Stretch the eyebrow line to exactly the width of the big title
-// Scale STÖRSÄNDAREN to fill the banner width beside the About button
+// Scale the app name to fill the banner width beside the About button
 function fitEyebrow(){
   const h=document.querySelector('h1'),box=document.querySelector('.brand-text'),om=document.getElementById('aboutBtn');if(!h||!box)return;
   const omW=om?om.offsetWidth+12:0;h.style.setProperty('--om-w',omW+'px');
   h.style.fontSize='100px';
   const r=document.createRange();r.selectNodeContents(h);const tw=r.getBoundingClientRect().width;
-  const avail=box.clientWidth-omW;if(tw>0)h.style.fontSize=Math.min(170,Math.max(40,100*avail/tw)).toFixed(1)+'px';
+  const avail=box.clientWidth-omW;if(tw>0)h.style.fontSize=Math.min(170,Math.max(24,100*avail/tw)).toFixed(1)+'px';
 }
 setLang(lang);
 fitEyebrow();window.addEventListener('resize',fitEyebrow);

@@ -1,9 +1,9 @@
-# Störsändaren
+# Dålig täckning
 Soundboard för samtal du inte vill ha.
 
 Sex störningsljud som skapas live i webbläsaren med Web Audio, utan ljudfiler:
 
-- **Dålig täckning** – linjen hackar sönder i robotgröt, digitala smällar och tvär tystnad
+- **Hackig linje** – linjen hackar sönder i robotgröt, digitala smällar och tvär tystnad
 - **Tågkrasch** – ett tåg som kraschar i full fart, oavbrutet våld och skrynklande plåt
 - **Rymdstation** – digitala störningar och en sönderhackad utomjordisk röst
 - **Dödsmetall** – våldsamma attacker av distorsion utan takt
@@ -15,7 +15,7 @@ Tryck på flera för att mixa. Ljuden växlar oregelbundet mellan starkt, svagt 
 Ljudet går genom en kompressor och förstärkning anpassad för mobilhögtalare, så att det hörs tydligt i en annan telefon.
 
 ## Språk
-Svenska och engelska (Call Jammer) finns i samma app. Byt med flaggorna under rubriken. Valet sparas, och första gången väljs språk efter telefonens inställning.
+Svenska och engelska (Bad Line) finns i samma app. Byt med flaggorna under rubriken. Valet sparas, och första gången väljs språk efter telefonens inställning.
 
 ## Publicering
 Se [PUBLICERA.md](PUBLICERA.md) för steg för steg till Google Play. Butikstexter och grafik finns i `butik/`. Integritetspolicyn ligger i `integritet.html`.

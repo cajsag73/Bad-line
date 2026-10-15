@@ -1,4 +1,4 @@
-# Så ger du ut Störsändaren på Google Play
+# Så ger du ut Dålig täckning på Google Play
 
 Appen är en webbapp. Den läggs ut gratis på GitHub Pages, och PWABuilder gör en Play-fil (`.aab`) som öppnar den som en vanlig app i helskärm. Du behöver ingen Android Studio.
 
@@ -30,8 +30,8 @@ All kod blir då synlig för alla.
 2. Välj **Package for stores → Android → Google Play**.
 3. Fyll i:
    - **Package ID:** `io.github.cajsag73.storsandaren` (går inte att ändra senare)
-   - **App name:** `Störsändaren`
-   - **Launcher name:** `Störsändaren`
+   - **App name:** `Dålig täckning`
+   - **Launcher name:** `Dålig täckning`
    - **Version:** `1.0.0`, **Version code:** `1`
    - **Signing key:** *Create new*
 4. Ladda ner zip-filen.
@@ -50,7 +50,7 @@ Android visar ett adressfält överst i appen tills det har bekräftat att webbp
 En mall finns i `.well-known/assetlinks.json` i det här repot.
 
 ## 6. Skapa appen i Play Console
-1. **Skapa app**. Namn: `Störsändaren`. Standardspråk: svenska. Typ: app. Pris: gratis.
+1. **Skapa app**. Namn: `Dålig täckning`. Standardspråk: svenska. Typ: app. Pris: gratis.
 2. Gå igenom **Appinnehåll**:
 
 | Fråga | Svar |
@@ -84,6 +84,6 @@ När produktionsåtkomsten är godkänd skapar du en produktionsversion med samm
 - **Namn, ikon eller paket-ID:** kräver en ny `.aab` från PWABuilder, signerad med **samma** nyckel och med högre version code.
 
 ## Risker vid granskningen
-- **Namnet.** "Störsändare" och "jammer" betyder riktiga störsändare, och de är olagliga. Granskaren kan tro att appen stör mobilnätet. Beskrivningen och Om-rutan säger därför tydligt att den bara spelar ljud. Om appen nekas är ett säkrare namn till exempel "Störsändaren – fejka dålig täckning" eller "Bad Line".
+- **Namnet** byttes från Störsändaren till Dålig täckning, eftersom "störsändare" och "jammer" kunde få granskaren att tro att appen stör mobilnätet. Adressen och paket-ID:t innehåller fortfarande `storsandaren`, men det syns inte för användarna.
 - **Vilseledande beteende.** Google tillåter inte appar som lovar något de inte kan göra. Därför ska butikstexten alltid säga att det är ljud i högtalaren, inte riktiga störningar.
 - **Typsnitten** hämtas från Google Fonts. Det står i integritetspolicyn. Vill du att appen inte ska kontakta någon alls kan typsnittsfilerna (Big Shoulders Display och IBM Plex, fri licens) laddas ner och läggas i repot.

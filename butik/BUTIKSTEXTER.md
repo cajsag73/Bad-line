@@ -6,20 +6,20 @@ Klistra in i Play Console under **Butiksnärvaro → Huvudbutiksinformation**. S
 
 **Appnamn** (max 30 tecken)
 ```
-Störsändaren
+Dålig täckning
 ```
 
 **Kort beskrivning** (max 80 tecken)
 ```
-Spela störningsljud under samtal – dålig täckning, tågkrasch, hagel och mer.
+Spela störningsljud under samtal – hackig linje, tågkrasch, hagel och mer.
 ```
 
 **Fullständig beskrivning** (max 4000 tecken)
 ```
-Någon ringer som du inte orkar prata med? Störsändaren är en soundboard med störningsljud som du spelar i bakgrunden, så att samtalet låter omöjligt att föra.
+Någon ringer som du inte orkar prata med? Dålig täckning är en soundboard med störningsljud som du spelar i bakgrunden, så att samtalet låter omöjligt att föra.
 
 Sex ljud som skapas live, så de aldrig låter likadant två gånger:
-• Dålig täckning – linjen hackar sönder i robotgröt, digitala smällar och tvär tystnad
+• Hackig linje – linjen hackar sönder i robotgröt, digitala smällar och tvär tystnad
 • Tågkrasch – 4000 ton metall i 120 km/h, oavbrutet
 • Rymdstation – digitala störningar och en sönderhackad utomjordisk röst
 • Dödsmetall – våldsamma attacker av distorsion utan takt och utan nåd
@@ -30,7 +30,7 @@ Mixa flera ljud samtidigt. Ljuden växlar oregelbundet mellan starkt, svagt och 
 
 Fejka avbrott: avsluta med upptagetton eller nätverksfelston, och lägg på.
 
-Så använder du den: håll telefonen med samtalet nära högtalaren på den enhet där Störsändaren spelar, eller sätt samtalet på högtalare. Ljudet är förstärkt för att höras tydligt i en annan telefon.
+Så använder du den: håll telefonen med samtalet nära högtalaren på den enhet där Dålig täckning spelar, eller sätt samtalet på högtalare. Ljudet är förstärkt för att höras tydligt i en annan telefon.
 
 • Ingen reklam
 • Inget konto
@@ -38,14 +38,14 @@ Så använder du den: håll telefonen med samtalet nära högtalaren på den enh
 • Fungerar utan internet
 • Svenska och engelska
 
-Störsändaren är en humorapp. Den spelar bara upp ljud i högtalaren och påverkar inte telefonnätet, samtal eller andra enheter.
+Dålig täckning är en humorapp. Den spelar bara upp ljud i högtalaren och påverkar inte telefonnätet, samtal eller andra enheter.
 ```
 
 ## English (en-US)
 
 **App name** (max 30 characters)
 ```
-Call Jammer: Fake Bad Signal
+Bad Line: Fake Bad Signal
 ```
 
 **Short description** (max 80 characters)
@@ -55,10 +55,10 @@ Play noise during calls – bad reception, train crash, hailstorm and more.
 
 **Full description** (max 4000 characters)
 ```
-Someone calling you don't feel like talking to? Call Jammer is a soundboard of interference sounds you play in the background, so the call sounds impossible to hold.
+Someone calling you don't feel like talking to? Bad Line is a soundboard of interference sounds you play in the background, so the call sounds impossible to hold.
 
 Six sounds generated live, so they never sound the same twice:
-• Bad reception – the line breaks up into robot mush, digital bursts and sudden silence
+• Choppy line – the line breaks up into robot mush, digital bursts and sudden silence
 • Train crash – 4,000 tonnes of metal at 120 km/h, nonstop
 • Space station – digital interference and a shredded alien voice
 • Death metal – violent attacks of distortion with no tempo and no mercy
@@ -69,7 +69,7 @@ Mix several sounds at once. They shift irregularly between loud, quiet and silen
 
 Fake a dropped call: finish with a busy tone or a network error tone, then hang up.
 
-How to use it: hold the phone with the call close to the speaker of the device playing Call Jammer, or put the call on speaker. The sound is boosted to come through clearly on another phone.
+How to use it: hold the phone with the call close to the speaker of the device playing Bad Line, or put the call on speaker. The sound is boosted to come through clearly on another phone.
 
 • No ads
 • No account
@@ -77,7 +77,7 @@ How to use it: hold the phone with the call close to the speaker of the device p
 • Works offline
 • English and Swedish
 
-Call Jammer is a humor app. It only plays sound through the speaker and does not affect the phone network, calls or other devices.
+Bad Line is a humor app. It only plays sound through the speaker and does not affect the phone network, calls or other devices.
 ```
 
 ## Övriga uppgifter
