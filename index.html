@@ -543,7 +543,7 @@ function dropCall(mode,btn){
   const t=ctx.currentTime+.02;
   stopAll(true);updateUI(true);
   dropBus=ctx.createGain();dropBus.connect(master);const db=dropBus;
-  const s=t+R(.4,.8);let end=s;
+  const s=t;let end=s;
   if(mode==='busy'){for(let i=0;i<10;i++)telTone(s+i*.5,425,.25,.32,db);end=s+5}
   else if(mode==='sit'){for(let k=0;k<2;k++){const b=s+k*2.6;[950,1400,1800].forEach((f,i)=>telTone(b+i*.34,f,.33,.28,db))}end=s+3.6}
   else end=s;
