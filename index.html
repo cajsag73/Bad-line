@@ -612,11 +612,11 @@ function fitBubble(){
   const cv=fitBubble.cv||(fitBubble.cv=document.createElement('canvas')),cx=cv.getContext('2d');
   // fit width
   let fs=16;lines.forEach((t,i)=>{t.textContent=words[i].replace(/å/g,'a').replace(/Å/g,'A');t.setAttribute('font-size','16')});
-  const wMax=Math.max(...lines.map(t=>t.getComputedTextLength()));if(wMax>0)fs=Math.min(17,16*54/wMax);
+  const wMax=Math.max(...lines.map(t=>t.getComputedTextLength()));if(wMax>0)fs=Math.min(14,16*46/wMax);
   cx.font=`400 ${fs*10}px "Lilita One"`;
   const xh=(cx.measureText('a').actualBoundingBoxAscent||fs*5.3)/10,cap=(cx.measureText('H').actualBoundingBoxAscent||fs*7)/10,desc=Math.max(0,...words.map(w=>(cx.measureText(w.replace(/[åÅ]/g,'a')).actualBoundingBoxDescent||0)/10));
   const hasRing=words.some(w=>/[åÅ]/.test(w)),sw=fs*.15,r=fs*.17,gap=fs*.01;
-  const top=hasRing?Math.max(cap,xh+gap+2*r+sw):cap,lineGap=fs*.42+desc,total=2*top+lineGap+desc,y0=44-total/2;
+  const top=hasRing?Math.max(cap,xh+gap+2*r+sw):cap,lineGap=fs*.32+desc,total=2*top+lineGap+desc,y0=42-total/2;
   lines.forEach((t,i)=>{
     t.setAttribute('font-size',fs.toFixed(2));const base=y0+top+i*(top+lineGap);t.setAttribute('y',base.toFixed(2));
     // centre on the ink, not the advance box (Lilita's ? has extra side bearing)
