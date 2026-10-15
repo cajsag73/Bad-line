@@ -103,15 +103,16 @@ body{height:100%;display:flex;flex-direction:column;gap:10px;overflow-y:auto;
 .wrap{flex:1 0 auto;width:100%;gap:10px}
 .brand{display:grid;grid-template-columns:minmax(0,1fr);align-items:center;column-gap:12px}
 .brand-text{display:flex;flex-direction:column;gap:7px;min-width:0}
-.langs{display:flex;gap:8px;margin-top:4px}
+.sub{display:flex;align-items:center;gap:12px;min-width:0}
+.langs{display:flex;gap:8px;flex:none}
 .flag{appearance:none;padding:0;border:2px solid transparent;border-radius:4px;background:none;cursor:pointer;line-height:0;transition:border-color .15s}
 .flag svg{width:30px;height:20px;display:block;border-radius:2px}
 .flag[aria-pressed="true"]{border-color:var(--accent)}
 .flag:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 .logo{height:clamp(52px,16vw,74px);width:100%;display:block;order:3}
 .skull{order:2;width:clamp(30px,9vw,44px);height:auto;display:block;margin-right:-4px}
-h1{font-size:clamp(30px,8.6vw,54px)}
-.eyebrow{color:var(--ink);font-weight:600}
+h1{font-size:clamp(56px,18vw,130px);line-height:.85;white-space:nowrap;padding-right:var(--om-w,0px)}
+.eyebrow{color:var(--ink);font-weight:600;white-space:normal;line-height:1.3;min-width:0}
 .lede,.tips{display:none}
 .panel{padding:8px 12px;gap:4px}
 .status{flex-direction:row;flex-wrap:wrap;align-items:baseline;column-gap:8px}
@@ -152,11 +153,13 @@ h1{font-size:clamp(30px,8.6vw,54px)}
   <header class="brand">
     <button type="button" class="about-btn" id="aboutBtn" data-i18n="about">Om</button>
     <div class="brand-text">
-      <div class="eyebrow" data-i18n="eyebrow">Soundboard för samtal du inte vill ha</div>
       <h1><span data-i18n="t1">Stör</span><span data-i18n="t2">sändaren</span></h1>
+      <div class="sub">
       <div class="langs" role="group" aria-label="Språk / Language">
         <button type="button" class="flag" data-lang="sv" aria-label="Svenska" aria-pressed="true"><svg viewBox="0 0 16 10" aria-hidden="true"><rect width="16" height="10" fill="#006AA7"/><rect x="5" width="2" height="10" fill="#FECC00"/><rect y="4" width="16" height="2" fill="#FECC00"/></svg></button>
         <button type="button" class="flag" data-lang="en" aria-label="English" aria-pressed="false"><svg viewBox="0 0 60 30" aria-hidden="true"><clipPath id="uk-c"><path d="M30 15h30v15zv15H0zH0V0zV0h30z"/></clipPath><rect width="60" height="30" fill="#012169"/><path d="M0 0l60 30M60 0L0 30" stroke="#FFF" stroke-width="6"/><path d="M0 0l60 30M60 0L0 30" clip-path="url(#uk-c)" stroke="#C8102E" stroke-width="4"/><path d="M30 0v30M0 15h60" stroke="#FFF" stroke-width="10"/><path d="M30 0v30M0 15h60" stroke="#C8102E" stroke-width="6"/></svg></button>
+            </div>
+        <div class="eyebrow" data-i18n="eyebrow">Soundboard för samtal du inte vill ha</div>
       </div>
       <p class="lede">Tryck på ett eller flera ljud för att mixa dem. Tryck igen för att stänga av just det ljudet. Håll telefonen med samtalet nära högtalaren.</p>
     </div>
@@ -577,13 +580,13 @@ document.querySelectorAll('.dropbtn').forEach(b=>b.addEventListener('click',()=>
 document.getElementById('vol').addEventListener('input',e=>{if(master)master.gain.setTargetAtTime(+e.target.value,ctx.currentTime,.02)});
 
 // Stretch the eyebrow line to exactly the width of the big title
+// Scale STÖRSÄNDAREN to fill the banner width beside the About button
 function fitEyebrow(){
-  const ey=document.querySelector('.eyebrow'),h=document.querySelector('h1');if(!ey||!h)return;
-  ey.style.letterSpacing='';ey.style.fontSize='';
-  const w=el=>{const r=document.createRange();r.selectNodeContents(el);return r.getBoundingClientRect().width};
-  const target=w(h),cur=w(ey),n=ey.textContent.length;
-  if(cur>target){ey.style.fontSize=(12*target/cur).toFixed(2)+'px'}
-  else if(n>1){const ls=parseFloat(getComputedStyle(ey).letterSpacing)||0;ey.style.letterSpacing=(ls+(target-cur)/n).toFixed(2)+'px'}
+  const h=document.querySelector('h1'),box=document.querySelector('.brand-text'),om=document.getElementById('aboutBtn');if(!h||!box)return;
+  const omW=om?om.offsetWidth+12:0;h.style.setProperty('--om-w',omW+'px');
+  h.style.fontSize='100px';
+  const r=document.createRange();r.selectNodeContents(h);const tw=r.getBoundingClientRect().width;
+  const avail=box.clientWidth-omW;if(tw>0)h.style.fontSize=Math.min(170,Math.max(40,100*avail/tw)).toFixed(1)+'px';
 }
 setLang(lang);
 fitEyebrow();window.addEventListener('resize',fitEyebrow);
