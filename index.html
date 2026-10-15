@@ -643,7 +643,7 @@ function fitEyebrow(){
   // icon is ~1.1 cap heights tall (font size * 0.8), aspect 84:76, plus a gap of 0.1 font size
   const per=100+0.95*84/76*100+14, avail=box.clientWidth-omW;
   const fs=Math.min(170,Math.max(24,100*avail/(tw+(per-100))));
-  h.style.fontSize=fs.toFixed(1)+'px';h.style.minWidth=(tw*fs/100).toFixed(1)+'px';row.style.setProperty('--ic-h',(fs*.95).toFixed(1)+'px');row.style.setProperty('--ic-gap',(fs*.14).toFixed(1)+'px');
+  h.style.fontSize=fs.toFixed(1)+'px';row.style.setProperty('--ic-h',(fs*.95).toFixed(1)+'px');row.style.setProperty('--ic-gap',(fs*.14).toFixed(1)+'px');
 }
 setLang(lang);
 fitEyebrow();fitBubble();window.addEventListener('resize',fitEyebrow);
