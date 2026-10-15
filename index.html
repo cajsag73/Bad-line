@@ -169,7 +169,7 @@ h1{font-size:clamp(56px,18vw,130px);line-height:.85;white-space:nowrap;margin:0}
       <svg class="appicon" viewBox="8 14 84 76" aria-hidden="true">
         <rect x="12" y="18" width="76" height="52" rx="12" fill="var(--skull)"/>
         <path d="M26 66L22 86L44 68Z" fill="var(--skull)"/>
-        <g fill="#000000" style="font-family:var(--display);font-weight:800;font-size:21px" text-anchor="middle"><text x="50" y="45" textLength="60" lengthAdjust="spacingAndGlyphs" data-i18n="bubble1">Hallå?</text><text x="50" y="65" textLength="60" lengthAdjust="spacingAndGlyphs" data-i18n="bubble2">Hallå?</text></g>
+        <g fill="#000000" style="font-family:var(--display);font-weight:800" text-anchor="middle" dominant-baseline="central"><text class="bfit" x="50" y="33" font-size="16" data-i18n="bubble1">Hallå?</text><text class="bfit" x="50" y="56" font-size="16" data-i18n="bubble2">Hallå?</text></g>
       </svg>
       </div>
       <div class="sub">
@@ -557,7 +557,7 @@ function setLang(l){
   renderTiles();
   if(typeof ABOUT!=='undefined'&&!about.hidden)document.getElementById('aboutBody').innerHTML=ABOUT[l];
   if(dropping)setStatus(T('dropping'),T('breaking'));else updateUI();
-  if(typeof fitEyebrow==='function')fitEyebrow();
+  if(typeof fitEyebrow==='function'){fitEyebrow();fitBubble()}
 }
 document.querySelectorAll('.flag').forEach(f=>f.addEventListener('click',()=>setLang(f.dataset.lang)));
 function setStatus(l,n){document.getElementById('lbl').textContent=l;document.getElementById('now').textContent=n}
@@ -604,6 +604,8 @@ document.querySelectorAll('.dropbtn').forEach(b=>b.addEventListener('click',()=>
 document.getElementById('vol').addEventListener('input',e=>{if(master)master.gain.setTargetAtTime(+e.target.value,ctx.currentTime,.02)});
 
 // Stretch the eyebrow line to exactly the width of the big title
+// Fit the bubble words inside the speech bubble, whatever the font
+function fitBubble(){document.querySelectorAll('text.bfit').forEach(t=>{t.setAttribute('font-size','16');const w=t.getComputedTextLength();if(w>0)t.setAttribute('font-size',Math.min(17,16*56/w).toFixed(2))})}
 // Scale the app name to fill the banner width beside the About button
 function fitEyebrow(){
   const h=document.querySelector('h1'),box=document.querySelector('.brand-text'),om=document.getElementById('aboutBtn');if(!h||!box)return;
@@ -616,8 +618,8 @@ function fitEyebrow(){
   h.style.fontSize=fs.toFixed(1)+'px';row.style.setProperty('--ic-h',(fs*.95).toFixed(1)+'px');row.style.setProperty('--ic-gap',(fs*.14).toFixed(1)+'px');
 }
 setLang(lang);
-fitEyebrow();window.addEventListener('resize',fitEyebrow);
-try{document.fonts.ready.then(fitEyebrow)}catch(e){}
+fitEyebrow();fitBubble();window.addEventListener('resize',fitEyebrow);
+try{document.fonts.ready.then(()=>{fitEyebrow();fitBubble()})}catch(e){}
 
 const cv=document.getElementById('meter'),g2=cv.getContext('2d');
 function draw(){
