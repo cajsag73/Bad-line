@@ -9,7 +9,7 @@ Fördelen är att ändringar du pushar hit når alla användare automatiskt, uta
 ## 1. Gör repot publikt
 GitHub Pages är bara gratis för publika repon.
 
-1. Gå till **github.com/cajsag73/storsandaren → Settings → General**.
+1. Gå till **github.com/cajsag73/bad-line → Settings → General**.
 2. Längst ner under **Danger Zone**, välj **Change visibility → Make public**.
 
 All kod blir då synlig för alla.
@@ -17,7 +17,7 @@ All kod blir då synlig för alla.
 ## 2. Slå på GitHub Pages
 1. **Settings → Pages**.
 2. Under **Build and deployment**, välj **Deploy from a branch**, branch **main**, mapp **/ (root)**, och tryck **Save**.
-3. Efter någon minut ligger appen på **https://cajsag73.github.io/storsandaren/**. Öppna adressen i mobilen och kontrollera att allt fungerar.
+3. Efter någon minut ligger appen på **https://cajsag73.github.io/bad-line/**. Öppna adressen i mobilen och kontrollera att allt fungerar.
 
 ## 3. Skapa ett Google Play-utvecklarkonto
 1. Gå till **play.google.com/console** och skapa ett **personligt** konto.
@@ -26,10 +26,10 @@ All kod blir då synlig för alla.
 4. Som utvecklarnamn skriver du **Cajsa Gustafsson**, samma som i appens Om-ruta.
 
 ## 4. Skapa Play-filen med PWABuilder
-1. Gå till **pwabuilder.com** och skriv in `https://cajsag73.github.io/storsandaren/`.
+1. Gå till **pwabuilder.com** och skriv in `https://cajsag73.github.io/bad-line/`.
 2. Välj **Package for stores → Android → Google Play**.
 3. Fyll i:
-   - **Package ID:** `io.github.cajsag73.storsandaren` (går inte att ändra senare)
+   - **Package ID:** `io.github.cajsag73.badline` (går inte att ändra senare)
    - **App name:** `Dålig täckning`
    - **Launcher name:** `Dålig täckning`
    - **Version:** `1.0.0`, **Version code:** `1`
@@ -55,7 +55,7 @@ En mall finns i `.well-known/assetlinks.json` i det här repot.
 
 | Fråga | Svar |
 |---|---|
-| Integritetspolicy | `https://cajsag73.github.io/storsandaren/integritet.html` |
+| Integritetspolicy | `https://cajsag73.github.io/bad-line/integritet.html` |
 | Annonser | Nej |
 | Åtkomst till appen | All funktionalitet är tillgänglig utan särskild åtkomst |
 | Innehållsklassificering | Fyll i formuläret. Inget våld, inget sexuellt innehåll, ingen interaktion mellan användare, inga köp. |
@@ -80,10 +80,9 @@ När produktionsåtkomsten är godkänd skapar du en produktionsversion med samm
 ---
 
 ## Uppdateringar
-- **Ljud, text och utseende:** ändra och pusha hit. Användarna får det nästa gång de öppnar appen två gånger, eftersom appen cachar sig själv för att fungera offline. Höj gärna `CACHE`-namnet i `sw.js` (till exempel `storsandaren-v2`) vid större ändringar.
+- **Ljud, text och utseende:** ändra och pusha hit. Användarna får det nästa gång de öppnar appen två gånger, eftersom appen cachar sig själv för att fungera offline. Höj gärna `CACHE`-namnet i `sw.js` (till exempel `badline-v2`) vid större ändringar.
 - **Namn, ikon eller paket-ID:** kräver en ny `.aab` från PWABuilder, signerad med **samma** nyckel och med högre version code.
 
 ## Risker vid granskningen
-- **Namnet** byttes från Störsändaren till Dålig täckning, eftersom "störsändare" och "jammer" kunde få granskaren att tro att appen stör mobilnätet. Adressen och paket-ID:t innehåller fortfarande `storsandaren`, men det syns inte för användarna.
 - **Vilseledande beteende.** Google tillåter inte appar som lovar något de inte kan göra. Därför ska butikstexten alltid säga att det är ljud i högtalaren, inte riktiga störningar.
 - **Typsnitten** ligger inbäddade i appen (fri licens, se `licenser/`), så appen kontaktar ingen extern tjänst. Svaret "samlar inte in data" i datasäkerhetsformuläret stämmer därför.

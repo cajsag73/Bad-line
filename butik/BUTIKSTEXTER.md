@@ -33,7 +33,7 @@ Fejka avbrott: avsluta med upptagetton eller nätverksfelston, och lägg på.
 Så använder du den: håll telefonen med samtalet nära högtalaren på den enhet där Dålig täckning spelar, eller sätt samtalet på högtalare. Ljudet är förstärkt för att höras tydligt i en annan telefon.
 
 • Helt gratis
-• Öppen källkod: https://github.com/cajsag73/storsandaren
+• Öppen källkod: https://github.com/cajsag73/bad-line
 • Ingen reklam
 • Inga köp i appen
 • Inget konto
@@ -75,7 +75,7 @@ Fake a dropped call: finish with a busy tone or a network error tone, then hang 
 How to use it: hold the phone with the call close to the speaker of the device playing Bad Line, or put the call on speaker. The sound is boosted to come through clearly on another phone.
 
 • Completely free
-• Open source: https://github.com/cajsag73/storsandaren
+• Open source: https://github.com/cajsag73/bad-line
 • No ads
 • No in-app purchases
 • No account
@@ -94,7 +94,7 @@ Bad Line is a humor app. It only plays sound through the speaker and does not af
 | Taggar | Humor, Soundboard |
 | Licens | MIT (öppen källkod) |
 | Kontakt-e-post | cajsa.g.art@gmail.com |
-| Integritetspolicy | https://cajsag73.github.io/storsandaren/integritet.html |
+| Integritetspolicy | https://cajsag73.github.io/bad-line/integritet.html |
 | Pris | Gratis |
 | Innehåller annonser | Nej |
 
