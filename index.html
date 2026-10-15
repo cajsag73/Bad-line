@@ -12,7 +12,7 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800&family=Lilita+One&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <style>
 :root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
 body{margin:0}
@@ -167,9 +167,9 @@ h1{font-size:clamp(56px,18vw,130px);line-height:.85;white-space:nowrap;margin:0}
       <div class="title-row">
       <h1><span data-i18n="t1">Dålig </span><span data-i18n="t2">täckning</span></h1>
       <svg class="appicon" viewBox="8 14 84 76" aria-hidden="true">
-        <rect x="12" y="18" width="76" height="52" rx="12" fill="var(--skull)"/>
-        <path d="M26 66L22 86L44 68Z" fill="var(--skull)"/>
-        <g fill="#000000" style="font-family:var(--display);font-weight:800" text-anchor="middle" dominant-baseline="central"><text class="bfit" x="50" y="33" font-size="16" data-i18n="bubble1">Hallå?</text><text class="bfit" x="50" y="56" font-size="16" data-i18n="bubble2">Hallå?</text></g>
+        <path d="M31 60L20 86L48 69Z" fill="#FFFFFF"/>
+        <ellipse cx="50" cy="44" rx="40" ry="27" fill="#FFFFFF"/>
+        <g id="bubbleText" fill="#000000" style="font-family:'Lilita One',var(--display)" text-anchor="middle"><text x="50" y="40" font-size="16"></text><text x="50" y="62" font-size="16"></text></g>
       </svg>
       </div>
       <div class="sub">
@@ -604,8 +604,27 @@ document.querySelectorAll('.dropbtn').forEach(b=>b.addEventListener('click',()=>
 document.getElementById('vol').addEventListener('input',e=>{if(master)master.gain.setTargetAtTime(+e.target.value,ctx.currentTime,.02)});
 
 // Stretch the eyebrow line to exactly the width of the big title
-// Fit the bubble words inside the speech bubble, whatever the font
-function fitBubble(){document.querySelectorAll('text.bfit').forEach(t=>{t.setAttribute('font-size','16');const w=t.getComputedTextLength();if(w>0)t.setAttribute('font-size',Math.min(17,16*56/w).toFixed(2))})}
+// Speech bubble: two lines in Lilita One, centred, with a big custom ring on å
+function fitBubble(){
+  const g=document.getElementById('bubbleText');if(!g)return;
+  const lines=[...g.querySelectorAll('text')],words=[T('bubble1'),T('bubble2')];
+  g.querySelectorAll('circle').forEach(c=>c.remove());
+  const cv=fitBubble.cv||(fitBubble.cv=document.createElement('canvas')),cx=cv.getContext('2d');
+  // fit width
+  let fs=16;lines.forEach((t,i)=>{t.textContent=words[i].replace(/å/g,'a').replace(/Å/g,'A');t.setAttribute('font-size','16')});
+  const wMax=Math.max(...lines.map(t=>t.getComputedTextLength()));if(wMax>0)fs=Math.min(17,16*54/wMax);
+  cx.font=`400 ${fs*10}px "Lilita One"`;
+  const xh=(cx.measureText('a').actualBoundingBoxAscent||fs*5.3)/10,cap=(cx.measureText('H').actualBoundingBoxAscent||fs*7)/10;
+  const hasRing=words.some(w=>/[åÅ]/.test(w)),sw=fs*.15,r=fs*.17,gap=fs*.07;
+  const top=hasRing?Math.max(cap,xh+gap+2*r+sw):cap,lineGap=fs*.42,total=2*top+lineGap,y0=44-total/2;
+  lines.forEach((t,i)=>{
+    t.setAttribute('font-size',fs.toFixed(2));const base=y0+top+i*(top+lineGap);t.setAttribute('y',base.toFixed(2));
+    [...words[i]].forEach((ch,k)=>{if(ch!=='å'&&ch!=='Å')return;
+      const e=t.getExtentOfChar(k),c=document.createElementNS('http://www.w3.org/2000/svg','circle');
+      const h=ch==='Å'?cap:xh;c.setAttribute('cx',(e.x+e.width/2).toFixed(2));c.setAttribute('cy',(base-h-gap-r-sw/2).toFixed(2));
+      c.setAttribute('r',r.toFixed(2));c.setAttribute('fill','none');c.setAttribute('stroke','#000000');c.setAttribute('stroke-width',sw.toFixed(2));g.appendChild(c)});
+  });
+}
 // Scale the app name to fill the banner width beside the About button
 function fitEyebrow(){
   const h=document.querySelector('h1'),box=document.querySelector('.brand-text'),om=document.getElementById('aboutBtn');if(!h||!box)return;
@@ -619,7 +638,7 @@ function fitEyebrow(){
 }
 setLang(lang);
 fitEyebrow();fitBubble();window.addEventListener('resize',fitEyebrow);
-try{document.fonts.ready.then(()=>{fitEyebrow();fitBubble()})}catch(e){}
+try{document.fonts.load('400 16px "Lilita One"').then(fitBubble).catch(()=>{});document.fonts.ready.then(()=>{fitEyebrow();fitBubble()})}catch(e){}
 
 const cv=document.getElementById('meter'),g2=cv.getContext('2d');
 function draw(){
