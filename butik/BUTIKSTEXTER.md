@@ -11,7 +11,7 @@ Dålig täckning
 
 **Kort beskrivning** (max 80 tecken)
 ```
-Spela störningsljud under samtal – hackig linje, tågkrasch, hagel och mer.
+Gratis störningsljud under samtal – hackig linje, tågkrasch, hagel och mer.
 ```
 
 **Fullständig beskrivning** (max 4000 tecken)
@@ -32,7 +32,10 @@ Fejka avbrott: avsluta med upptagetton eller nätverksfelston, och lägg på.
 
 Så använder du den: håll telefonen med samtalet nära högtalaren på den enhet där Dålig täckning spelar, eller sätt samtalet på högtalare. Ljudet är förstärkt för att höras tydligt i en annan telefon.
 
+• Helt gratis
+• Öppen källkod: https://github.com/cajsag73/storsandaren
 • Ingen reklam
+• Inga köp i appen
 • Inget konto
 • Samlar inte in några uppgifter
 • Fungerar utan internet
@@ -50,7 +53,7 @@ Bad Line: Fake Bad Signal
 
 **Short description** (max 80 characters)
 ```
-Play noise during calls – bad reception, train crash, hailstorm and more.
+Free noise for calls – bad reception, train crash, hailstorm and more.
 ```
 
 **Full description** (max 4000 characters)
@@ -71,7 +74,10 @@ Fake a dropped call: finish with a busy tone or a network error tone, then hang 
 
 How to use it: hold the phone with the call close to the speaker of the device playing Bad Line, or put the call on speaker. The sound is boosted to come through clearly on another phone.
 
+• Completely free
+• Open source: https://github.com/cajsag73/storsandaren
 • No ads
+• No in-app purchases
 • No account
 • Collects no data
 • Works offline
@@ -86,6 +92,7 @@ Bad Line is a humor app. It only plays sound through the speaker and does not af
 |---|---|
 | Kategori | Underhållning |
 | Taggar | Humor, Soundboard |
+| Licens | MIT (öppen källkod) |
 | Kontakt-e-post | cajsa.g.art@gmail.com |
 | Integritetspolicy | https://cajsag73.github.io/storsandaren/integritet.html |
 | Pris | Gratis |

@@ -22,3 +22,6 @@ Se [PUBLICERA.md](PUBLICERA.md) för steg för steg till Google Play. Butikstext
 
 ## Använd
 Öppna `index.html` i mobilens webbläsare och håll telefonen med samtalet nära högtalaren. Ljud kan bara starta efter ett tryck.
+
+## Licens
+Appen är gratis och öppen källkod under [MIT-licensen](LICENSE). Typsnitten har SIL Open Font License, se `licenser/`.
