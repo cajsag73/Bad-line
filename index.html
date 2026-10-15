@@ -101,7 +101,7 @@ html{height:100%;box-sizing:border-box}
 body{height:100%;display:flex;flex-direction:column;gap:10px;overflow-y:auto;
   padding-block:10px calc(10px + env(safe-area-inset-bottom,0px))}
 .wrap{flex:1 0 auto;width:100%;gap:10px}
-.brand{display:grid;grid-template-columns:auto auto minmax(0,1fr);align-items:center;column-gap:12px}
+.brand{display:grid;grid-template-columns:minmax(0,1fr);align-items:center;column-gap:12px}
 .brand-text{display:flex;flex-direction:column;gap:7px;min-width:0}
 .langs{display:flex;gap:8px;margin-top:4px}
 .flag{appearance:none;padding:0;border:2px solid transparent;border-radius:4px;background:none;cursor:pointer;line-height:0;transition:border-color .15s}
@@ -133,29 +133,24 @@ h1{font-size:clamp(30px,8.6vw,54px)}
 .dropbtn .t{font-size:19px}
 .bar{position:static;border:0;background:transparent;padding:0}
 .bar-in .btn{padding:12px 16px}
-#stopBtn{background:var(--accent);border:2px solid var(--accent);color:var(--accent-ink);font-weight:700}
-#stopBtn:active{filter:brightness(.9)}
+.brand{position:relative}
+.about-btn{position:absolute;top:0;right:0;appearance:none;font:inherit;font-family:var(--mono);font-weight:600;font-size:13px;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--ink);background:transparent;border:1.5px solid var(--line);border-radius:6px;padding:5px 10px;cursor:pointer}
+.about-btn:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.about[hidden]{display:none!important}
+.about{position:fixed;inset:0;z-index:10;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;
+  padding:max(16px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(16px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.about-box{background:var(--panel);color:var(--ink);border:1.5px solid var(--line);border-radius:8px;padding:18px;max-width:520px;width:100%;max-height:100%;overflow-y:auto;display:flex;flex-direction:column;gap:12px}
+.about-box h2{margin:0;font-family:var(--display);font-weight:700;font-size:26px;text-transform:uppercase}
+.about-body ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:8px;font-size:14.5px;line-height:1.45}
+.about-body b{color:var(--accent)}
+.about-box .btn{align-self:flex-start}
 </style>
 </head>
 <body>
 <div class="wrap">
   <header class="brand">
-    <svg class="skull" viewBox="0 0 48 56" aria-hidden="true">
-      <path d="M24 3C11 3 4 12 4 23c0 7 3 12 8 15v6c0 2 1.5 3.5 3.5 3.5h17c2 0 3.5-1.5 3.5-3.5v-6c5-3 8-8 8-15C44 12 37 3 24 3Z" fill="var(--skull)"/>
-      <ellipse cx="15.5" cy="25" rx="5.8" ry="6.4" fill="var(--bg)"/>
-      <ellipse cx="32.5" cy="25" rx="5.8" ry="6.4" fill="var(--bg)"/>
-      <path d="M24 31.5l-3.2 6.2h6.4Z" fill="var(--bg)"/>
-      <g stroke="var(--bg)" stroke-width="1.8" stroke-linecap="round"><path d="M19 41.5v5.5M24 41.5v5.5M29 41.5v5.5"/></g>
-    </svg>
-    <svg class="logo" viewBox="0 0 150 72" preserveAspectRatio="xMinYMid meet" aria-hidden="true">
-      <g fill="none" stroke="var(--accent)" stroke-linecap="round">
-        <path d="M6.3 20.0Q21.7 36 6.3 52.0" stroke-width="7.0"/>
-        <path d="M36.4 16.0Q55.6 36 36.4 56.0" stroke-width="7.5"/>
-        <path d="M66.5 12.0Q89.5 36 66.5 60.0" stroke-width="8.0"/>
-        <path d="M96.6 8.0Q123.4 36 96.6 64.0" stroke-width="8.5"/>
-        <path d="M126.6 4.0Q157.4 36 126.6 68.0" stroke-width="9.0"/>
-      </g>
-    </svg>
+    <button type="button" class="about-btn" id="aboutBtn" data-i18n="about">Om</button>
     <div class="brand-text">
       <div class="eyebrow" data-i18n="eyebrow">Soundboard för samtal du inte vill ha</div>
       <h1><span data-i18n="t1">Stör</span><span data-i18n="t2">sändaren</span></h1>
@@ -198,9 +193,11 @@ h1{font-size:clamp(30px,8.6vw,54px)}
   </section>
 </div>
 
-<div class="bar">
-  <div class="bar-in">
-    <button class="btn solid" id="stopBtn" type="button" data-i18n="stop">Stoppa allt</button>
+<div class="about" id="about" hidden>
+  <div class="about-box" role="dialog" aria-modal="true" aria-labelledby="aboutTitle">
+    <h2 id="aboutTitle" data-i18n="aboutTitle">Så funkar det</h2>
+    <div class="about-body" id="aboutBody"></div>
+    <button type="button" class="btn solid" id="aboutClose" data-i18n="close">Stäng</button>
   </div>
 </div>
 
@@ -287,7 +284,7 @@ const scenes=[
       const f=R(400,2000),len=R(.03,.08),n=Math.floor(R(3,8));for(let i=0;i<n;i++)burst(out,t+i*len*1.15,len,{f,q:2,gain:.45,attack:.003});return n*len*1.15}
     return R(.1,.5);
   }},
- {id:'tag',name:'Tågkrasch',steady:true,what:'Ett tåg kraschar i full fart. Vagnar trycks ihop, plåt skrynklas och stål slits sönder.',spec:'Ca 400 ton i 120 km/h',
+ {id:'tag',name:'Tågkrasch',steady:true,what:'Ett tåg kraschar i full fart. Vagnar trycks ihop, plåt skrynklas och stål slits sönder.',spec:'4000 ton metall i 120 km/h',
   setup(out,nodes,t0){
     const rumble=bed(out,nodes,{type:'lowpass',f:120,q:.9,gain:1.4});
     const sub=ctx.createOscillator(),sg=ctx.createGain();sub.frequency.value=38;sg.gain.value=.3;sub.connect(sg).connect(out);sub.start();nodes.push(sub);
@@ -375,6 +372,15 @@ const scenes=[
  {id:'storm',name:'Hagelstorm',what:'Saker krossas och bryts sönder med full kraft.',spec:'Takpannor · plåt · glas · virke',
   setup(out){return{d:distBus(out,60,9000,1.1)}},
   step(out,t,s){
+    if(P(.07)){// hurricane roar: deep, broad gust that swells and drops, clean (no distortion, no narrow tones)
+      const x=t+R(0,.3),dur=R(2,4.5),n=noiseSrc(),lp=ctx.createBiquadFilter(),body=ctx.createBiquadFilter(),v=ctx.createGain();
+      lp.type='lowpass';lp.Q.value=.5;lp.frequency.setValueAtTime(250,x);
+      body.type='peaking';body.frequency.value=R(140,220);body.Q.value=.7;body.gain.value=8;
+      for(let y=0;y<dur;y+=R(.4,.8))lp.frequency.setTargetAtTime(R(350,1100),x+y,.35);
+      v.gain.setValueAtTime(0,x);v.gain.linearRampToValueAtTime(R(2.2,3),x+dur*R(.3,.5));
+      for(let y=dur*.5;y<dur-.6;y+=R(.4,.7))v.gain.setTargetAtTime(R(1.6,3),x+y,.25);
+      v.gain.setTargetAtTime(0,x+dur-.6,.25);
+      n.connect(lp).connect(body).connect(v).connect(out);n.start(x,Math.random()*1.5);n.stop(x+dur+1.5)}
     const r=Math.random();let d;
     if(r<.2){thud(s.d,t,{gain:R(.6,1.1),f:R(45,90)});burst(s.d,t,.06,{type:'highpass',f:800,gain:.6,attack:.0005});d=.3}
     else if(r<.36){// glass shattering
@@ -414,9 +420,9 @@ const scenes=[
     const grind=(x,dur)=>{// metal on metal: narrow screeching resonances drifting slowly
       const f=R(900,1800),p=[];for(let y=.2;y<dur-.2;y+=R(.25,.5))p.push([y,f*R(.85,1.2),.15]);
       tonal(x,dur,f,p,22,9);tonal(x,dur,f*1.47,p.map(([a,b,c])=>[a,b*1.47,c]),22,5)};
-    const drill=(x,dur)=>{// electric drill: whine spins up, bogs under load, spins down
-      const top=R(700,1000),p=[[0,top,.12]];for(let y=.4;y<dur-.3;y+=R(.2,.45))p.push([y,top*(P(.35)?R(.65,.8):R(.97,1.03)),.07]);p.push([dur-.25,150,.08]);
-      tonal(x,dur,150,p,18,8);tonal(x,dur,300,p.map(([a,b,c])=>[a,b*2,c]),18,4);
+    const drill=(x,dur)=>{// electric drill, low body only: motor rumble that bogs under load, plus low chatter
+      const top=R(140,190),p=[[0,top,.12]];for(let y=.4;y<dur-.3;y+=R(.2,.45))p.push([y,top*(P(.35)?R(.7,.85):R(.97,1.03)),.07]);p.push([dur-.25,70,.08]);
+      tonal(x,dur,70,p,8,7);
       for(let y=x+.3;y<x+dur-.2;y+=R(.08,.14))burst(s.d,y,.09,{type:'lowpass',f:R(200,380),gain:R(.4,.7),attack:.012})};
     const r=Math.random();let d;
     if(r<.05){d=R(1.2,2.5);drill(t,d)}
@@ -495,12 +501,12 @@ function dropCall(mode,btn){
 }
 
 const I18N={
- sv:{title:'Störsändaren',eyebrow:'Soundboard för samtal du inte vill ha',t1:'Stör',t2:'sändaren',vol:'Volym',drop:'Fejka avbrott',busy:'Upptagetton',sit:'Nätverksfel',sitS:'tre stigande toner',stop:'Stoppa allt',
+ sv:{title:'Störsändaren',eyebrow:'Soundboard för samtal du inte vill ha',t1:'Stör',t2:'sändaren',vol:'Volym',drop:'Fejka avbrott',busy:'Upptagetton',sit:'Nätverksfel',sitS:'tre stigande toner',about:'Om',aboutTitle:'Så funkar det',close:'Stäng',
    silent:'Tyst',pick:'Välj ett eller flera ljud',onair:'Sänder nu',mixing:n=>`Mixar ${n} ljud`,dropping:'Avbrott',breaking:'Samtalet bryts…',ch:'KANAL',live:'SÄNDER'},
- en:{title:'Call Jammer',eyebrow:"Soundboard for calls you don't want",t1:'Call ',t2:'Jammer',vol:'Volume',drop:'Fake a dropped call',busy:'Busy tone',sit:'Network error',sitS:'three rising tones',stop:'Stop all',
+ en:{title:'Call Jammer',eyebrow:"Soundboard for calls you don't want",t1:'Call ',t2:'Jammer',vol:'Volume',drop:'Fake a dropped call',busy:'Busy tone',sit:'Network error',sitS:'three rising tones',about:'About',aboutTitle:'How it works',close:'Close',
    silent:'Silent',pick:'Pick one or more sounds',onair:'On air',mixing:n=>`Mixing ${n} sounds`,dropping:'Dropping',breaking:'Call breaking up…',ch:'CHANNEL',live:'ON AIR'}
 };
-const SCENE_EN={"tackning": {"name": "Bad reception", "what": "The line breaks up into robot mush, digital bursts and sudden silence.", "spec": "Voice codec in 20 ms frames"}, "tag": {"name": "Train crash", "what": "A train crashes at full speed. Cars crumple, sheet metal folds and steel tears apart.", "spec": "About 400 tonnes at 120 km/h"}, "rymd": {"name": "Space station", "what": "Digital interference and a shredded alien voice talking in the background.", "spec": "TDMA buzz 217 Hz · 3-bit voice"}, "metall": {"name": "Death metal", "what": "Violent attacks of distortion, bass blasts and screams that come and go.", "spec": "Tempo: none · Mercy: none"}, "storm": {"name": "Hailstorm", "what": "Things get smashed and torn apart at full force.", "spec": "Roof tiles · sheet metal · glass · timber"}, "bygg": {"name": "Construction site", "what": "Jackhammer, power drill, violent hammer blows and metal grinding on metal. Completely irregular.", "spec": "No rhythm. No finesse."}};
+const SCENE_EN={"tackning": {"name": "Bad reception", "what": "The line breaks up into robot mush, digital bursts and sudden silence.", "spec": "Voice codec in 20 ms frames"}, "tag": {"name": "Train crash", "what": "A train crashes at full speed. Cars crumple, sheet metal folds and steel tears apart.", "spec": "4,000 tonnes of metal at 120 km/h"}, "rymd": {"name": "Space station", "what": "Digital interference and a shredded alien voice talking in the background.", "spec": "TDMA buzz 217 Hz · 3-bit voice"}, "metall": {"name": "Death metal", "what": "Violent attacks of distortion, bass blasts and screams that come and go.", "spec": "Tempo: none · Mercy: none"}, "storm": {"name": "Hailstorm", "what": "Things get smashed and torn apart at full force.", "spec": "Roof tiles · sheet metal · glass · timber"}, "bygg": {"name": "Construction site", "what": "Jackhammer, power drill, violent hammer blows and metal grinding on metal. Completely irregular.", "spec": "No rhythm. No finesse."}};
 scenes.forEach(sc=>{sc.i18n={sv:{name:sc.name,what:sc.what,spec:sc.spec},en:SCENE_EN[sc.id]}});
 let lang='sv';
 try{const v=localStorage.getItem('lang');if(v==='sv'||v==='en')lang=v;else if(!/^sv\b/i.test(navigator.language||'sv'))lang='en'}catch(e){}
@@ -522,6 +528,7 @@ function setLang(l){
   document.querySelectorAll('[data-i18n]').forEach(el=>{el.textContent=T(el.dataset.i18n)});
   document.querySelectorAll('.flag').forEach(f=>f.setAttribute('aria-pressed',String(f.dataset.lang===l)));
   renderTiles();
+  if(typeof ABOUT!=='undefined'&&!about.hidden)document.getElementById('aboutBody').innerHTML=ABOUT[l];
   if(dropping)setStatus(T('dropping'),T('breaking'));else updateUI();
   if(typeof fitEyebrow==='function')fitEyebrow();
 }
@@ -542,7 +549,30 @@ function hardStop(){
   if(ctx){const c=ctx;ctx=null;master=null;analyser=null;try{c.close()}catch(e){}}
   updateUI();
 }
-document.getElementById('stopBtn').addEventListener('click',hardStop);
+const ABOUT={
+ sv:`<ul>
+  <li><b>Starta ett ljud</b> genom att trycka på det. Tryck på flera för att mixa dem.</li>
+  <li><b>Stoppa ett ljud</b> genom att trycka en gång till på knappen som är igång. Ljudet tystnar direkt.</li>
+  <li><b>Fejka avbrott:</b> tryck på Upptagetton eller Nätverksfel. Allt annat tystnar och signalen spelas. Tryck på samma knapp igen för att stoppa den, eller på ett annat ljud för att byta.</li>
+  <li><b>Håll telefonen</b> med samtalet 10–20 cm från högtalaren, med mikrofonen (nederkanten) mot ljudet, och skruva upp mediavolymen.</li>
+  <li><b>iPhone:</b> sätt mikrofonläget till Standard i Kontrollcenter under samtalet, annars filtreras mycket bort.</li>
+  <li><b>Prata lite själv.</b> "Hallå? Jag hör dig inte…" över ljudet gör det trovärdigt.</li>
+ </ul>`,
+ en:`<ul>
+  <li><b>Start a sound</b> by tapping it. Tap several to mix them.</li>
+  <li><b>Stop a sound</b> by tapping the button that is playing once more. It goes silent right away.</li>
+  <li><b>Fake a dropped call:</b> tap Busy tone or Network error. Everything else goes quiet and the signal plays. Tap the same button again to stop it, or another sound to switch.</li>
+  <li><b>Hold the phone</b> with the call 10–20 cm from the speaker, microphone (bottom edge) facing the sound, and turn the media volume up.</li>
+  <li><b>iPhone:</b> set Mic Mode to Standard in Control Center during the call, or a lot gets filtered out.</li>
+  <li><b>Say a few words yourself.</b> "Hello? I can't hear you…" over the noise sells it.</li>
+ </ul>`};
+const about=document.getElementById('about');
+function openAbout(){document.getElementById('aboutBody').innerHTML=ABOUT[lang];about.hidden=false;document.getElementById('aboutClose').focus()}
+function closeAbout(){about.hidden=true;document.getElementById('aboutBtn').focus()}
+document.getElementById('aboutBtn').addEventListener('click',openAbout);
+document.getElementById('aboutClose').addEventListener('click',closeAbout);
+about.addEventListener('click',e=>{if(e.target===about)closeAbout()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!about.hidden)closeAbout()});
 document.querySelectorAll('.dropbtn').forEach(b=>b.addEventListener('click',()=>dropCall(b.dataset.mode,b)));
 document.getElementById('vol').addEventListener('input',e=>{if(master)master.gain.setTargetAtTime(+e.target.value,ctx.currentTime,.02)});
 
