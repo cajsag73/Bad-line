@@ -7,34 +7,36 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <style>
-:root{padding-top:env(safe-area-inset-top,0px)}
+:root{padding-top:env(safe-area-inset-top,0px);color-scheme:light}
 body{margin:0}
+[hidden]{display:none!important}
 /* Layout: signal-panel — header, two-column grid of channel tiles, fixed transmit bar at the bottom */
 :root{
   --bg:#E8EBEE; --panel:#F6F7F8; --ink:#18202B; --muted:#5A6472; --line:#C8CED6;
   --accent:#D2450F; --accent-ink:#FFFFFF; --accent-soft:rgba(210,69,15,.10);
+  --skull:var(--ink);
   --display:"Big Shoulders Display","Arial Narrow",Impact,sans-serif;
   --body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
   --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#12161C; --panel:#1A2028; --ink:#E6E9ED; --muted:#8E98A5; --line:#2C3541;
-  --accent:#FF6B2C; --accent-ink:#140700; --accent-soft:rgba(255,107,44,.13); color-scheme:dark }}
+  --accent:#FF6B2C; --accent-ink:#140700; --accent-soft:rgba(255,107,44,.13); --skull:#FFFFFF; color-scheme:dark }}
 :root[data-theme="dark"]{
   --bg:#12161C; --panel:#1A2028; --ink:#E6E9ED; --muted:#8E98A5; --line:#2C3541;
-  --accent:#FF6B2C; --accent-ink:#140700; --accent-soft:rgba(255,107,44,.13); color-scheme:dark }
+  --accent:#FF6B2C; --accent-ink:#140700; --accent-soft:rgba(255,107,44,.13); --skull:#FFFFFF; color-scheme:dark }
 
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
-  padding-block:20px calc(150px + env(safe-area-inset-bottom,0px))}
+  padding-block:20px calc(100px + env(safe-area-inset-bottom,0px))}
 .wrap{max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:22px}
 header{display:flex;flex-direction:column;gap:6px}
-.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.eyebrow{white-space:nowrap;font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 h1{font-family:var(--display);font-weight:800;font-size:clamp(44px,13vw,72px);line-height:.9;margin:0;letter-spacing:.01em;text-transform:uppercase;text-wrap:balance}
-h1 span{color:var(--accent)}
+h1 span+span{color:var(--accent)}
 .lede{margin:4px 0 0;color:var(--muted);max-width:52ch}
 
 .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
@@ -46,7 +48,7 @@ h1 span{color:var(--accent)}
 .tile:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 .tile .ch{font-family:var(--mono);font-size:11px;color:var(--muted);display:flex;justify-content:space-between;gap:8px}
 .tile .name{font-family:var(--display);font-weight:700;font-size:26px;line-height:1;text-transform:uppercase;letter-spacing:.01em}
-.tile .what{font-size:13px;color:var(--muted);line-height:1.35}
+.tile .what{font-size:13px;color:var(--accent);line-height:1.35}
 .tile .spec{margin-top:auto;font-family:var(--mono);font-size:11px;color:var(--muted)}
 .tile .live{display:none;color:var(--accent);font-weight:500}
 .tile[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
@@ -66,25 +68,24 @@ h1 span{color:var(--accent)}
 
 .bar{position:fixed;left:0;right:0;bottom:0;background:var(--panel);border-top:1.5px solid var(--line);
   padding:12px max(16px,env(safe-area-inset-right,0px)) calc(12px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
-.bar-in{max-width:720px;margin:0 auto;display:grid;grid-template-columns:1fr auto;gap:10px 14px;align-items:center}
+.bar-in{max-width:720px;margin:0 auto;display:flex}
+.bar-in .btn{flex:1;font-size:17px;padding:14px 16px}
+.panel{display:flex;flex-direction:column;gap:10px;background:var(--panel);border:1.5px solid var(--line);border-radius:6px;padding:14px}
 .status{min-width:0;display:flex;flex-direction:column;gap:2px}
 .status .lbl{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
-.status .now{font-family:var(--display);font-weight:700;font-size:20px;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.status .now{font-family:var(--display);font-weight:700;font-size:20px;text-transform:uppercase;line-height:1.15;overflow-wrap:anywhere}
 canvas{width:100%;height:26px;display:block}
-.vol{grid-column:1 / -1;display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:12px;color:var(--muted)}
+.vol{display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:12px;color:var(--muted)}
 .vol input{flex:1;accent-color:var(--accent)}
 @media (prefers-reduced-motion:reduce){.dot{animation:none}.tile{transition:none}}
 </style>
 
 <style>
-:root{padding-top:env(safe-area-inset-top,0px)}
-body{margin:0}
 .seg{display:flex;flex-wrap:wrap;gap:6px}
 .seg label{display:flex;align-items:center;gap:6px;border:1.5px solid var(--line);border-radius:6px;padding:8px 10px;font-size:14px;cursor:pointer;background:var(--panel)}
 .seg input{accent-color:var(--accent);margin:0}
 .seg label:has(input:checked){border-color:var(--accent);background:var(--accent-soft)}
-.lang{align-self:flex-start;font-family:var(--mono);font-size:12px;color:var(--accent);text-decoration:none;border-bottom:1px solid currentColor;margin-bottom:6px}
-.drops{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.drops{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
 @media (max-width:520px){.drops{grid-template-columns:1fr}}
 .dropbtn{appearance:none;font:inherit;cursor:pointer;text-align:left;color:var(--ink);background:var(--panel);border:1.5px solid var(--accent);border-radius:6px;padding:16px;min-height:76px;display:flex;flex-direction:column;justify-content:center;gap:4px;transition:background .15s,transform .08s}
 .dropbtn:active{transform:scale(.98)}
@@ -94,25 +95,95 @@ body{margin:0}
 .dropbtn .s{font-family:var(--mono);font-size:12px;opacity:.75}
 .drop .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
 </style>
+<style>
+/* One-screen layout: everything fits the viewport, tiles share the leftover height */
+html{height:100%;box-sizing:border-box}
+body{height:100%;display:flex;flex-direction:column;gap:10px;overflow-y:auto;
+  padding-block:10px calc(10px + env(safe-area-inset-bottom,0px))}
+.wrap{flex:1 0 auto;width:100%;gap:10px}
+.brand{display:grid;grid-template-columns:auto auto minmax(0,1fr);align-items:center;column-gap:12px}
+.brand-text{display:flex;flex-direction:column;gap:7px;min-width:0}
+.langs{display:flex;gap:8px;margin-top:4px}
+.flag{appearance:none;padding:0;border:2px solid transparent;border-radius:4px;background:none;cursor:pointer;line-height:0;transition:border-color .15s}
+.flag svg{width:30px;height:20px;display:block;border-radius:2px}
+.flag[aria-pressed="true"]{border-color:var(--accent)}
+.flag:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.logo{height:clamp(52px,16vw,74px);width:100%;display:block;order:3}
+.skull{order:2;width:clamp(30px,9vw,44px);height:auto;display:block;margin-right:-4px}
+h1{font-size:clamp(30px,8.6vw,54px)}
+.eyebrow{color:var(--ink);font-weight:600}
+.lede,.tips{display:none}
+.panel{padding:8px 12px;gap:4px}
+.status{flex-direction:row;flex-wrap:wrap;align-items:baseline;column-gap:8px}
+.status .now{font-size:16px;flex:1;min-width:0}
+.status canvas{flex-basis:100%;height:12px;margin-top:2px}
+.grid{flex:1 0 auto;grid-auto-rows:minmax(66px,1fr);gap:8px}
+.tile{min-height:0;padding:9px 11px;gap:3px;overflow:hidden;position:relative}
+.tile .ch{display:none}
+.tile .spec{font-size:10px;line-height:1.25;margin-top:auto}
+.tile .name{font-size:clamp(17px,5.4vw,21px);padding-right:56px}
+.tile .what{font-size:11.5px;line-height:1.25}
+.tile .live{display:none;position:absolute;top:10px;right:10px;font-family:var(--mono);font-size:10px;color:var(--accent);align-items:center;gap:4px}
+.tile[aria-pressed="true"] .live{display:inline-flex}
+.drop{padding:8px 12px;gap:6px;border-style:solid}
+.drop h2{font-size:16px}
+.drop p{display:none}
+.drops{grid-template-columns:1fr 1fr !important;gap:8px}
+.dropbtn{min-height:0;padding:9px 12px;justify-content:flex-start;flex-direction:row;align-items:baseline;flex-wrap:wrap;column-gap:8px}
+.dropbtn .t{font-size:19px}
+.bar{position:static;border:0;background:transparent;padding:0}
+.bar-in .btn{padding:12px 16px}
+#stopBtn{background:var(--accent);border:2px solid var(--accent);color:var(--accent-ink);font-weight:700}
+#stopBtn:active{filter:brightness(.9)}
+</style>
 </head>
 <body>
 <div class="wrap">
-  <header>
-    <a class="lang" href="en.html" lang="en">In English</a>
-    <div class="eyebrow">Soundboard för samtal du inte vill ha</div>
-    <h1>Stör<span>sändaren</span></h1>
-    <p class="lede">Tryck på ett eller flera ljud för att mixa dem. Tryck igen för att stänga av just det ljudet. Håll telefonen med samtalet nära högtalaren.</p>
+  <header class="brand">
+    <svg class="skull" viewBox="0 0 48 56" aria-hidden="true">
+      <path d="M24 3C11 3 4 12 4 23c0 7 3 12 8 15v6c0 2 1.5 3.5 3.5 3.5h17c2 0 3.5-1.5 3.5-3.5v-6c5-3 8-8 8-15C44 12 37 3 24 3Z" fill="var(--skull)"/>
+      <ellipse cx="15.5" cy="25" rx="5.8" ry="6.4" fill="var(--bg)"/>
+      <ellipse cx="32.5" cy="25" rx="5.8" ry="6.4" fill="var(--bg)"/>
+      <path d="M24 31.5l-3.2 6.2h6.4Z" fill="var(--bg)"/>
+      <g stroke="var(--bg)" stroke-width="1.8" stroke-linecap="round"><path d="M19 41.5v5.5M24 41.5v5.5M29 41.5v5.5"/></g>
+    </svg>
+    <svg class="logo" viewBox="0 0 150 72" preserveAspectRatio="xMinYMid meet" aria-hidden="true">
+      <g fill="none" stroke="var(--accent)" stroke-linecap="round">
+        <path d="M6.3 20.0Q21.7 36 6.3 52.0" stroke-width="7.0"/>
+        <path d="M36.4 16.0Q55.6 36 36.4 56.0" stroke-width="7.5"/>
+        <path d="M66.5 12.0Q89.5 36 66.5 60.0" stroke-width="8.0"/>
+        <path d="M96.6 8.0Q123.4 36 96.6 64.0" stroke-width="8.5"/>
+        <path d="M126.6 4.0Q157.4 36 126.6 68.0" stroke-width="9.0"/>
+      </g>
+    </svg>
+    <div class="brand-text">
+      <div class="eyebrow" data-i18n="eyebrow">Soundboard för samtal du inte vill ha</div>
+      <h1><span data-i18n="t1">Stör</span><span data-i18n="t2">sändaren</span></h1>
+      <div class="langs" role="group" aria-label="Språk / Language">
+        <button type="button" class="flag" data-lang="sv" aria-label="Svenska" aria-pressed="true"><svg viewBox="0 0 16 10" aria-hidden="true"><rect width="16" height="10" fill="#006AA7"/><rect x="5" width="2" height="10" fill="#FECC00"/><rect y="4" width="16" height="2" fill="#FECC00"/></svg></button>
+        <button type="button" class="flag" data-lang="en" aria-label="English" aria-pressed="false"><svg viewBox="0 0 60 30" aria-hidden="true"><clipPath id="uk-c"><path d="M30 15h30v15zv15H0zH0V0zV0h30z"/></clipPath><rect width="60" height="30" fill="#012169"/><path d="M0 0l60 30M60 0L0 30" stroke="#FFF" stroke-width="6"/><path d="M0 0l60 30M60 0L0 30" clip-path="url(#uk-c)" stroke="#C8102E" stroke-width="4"/><path d="M30 0v30M0 15h60" stroke="#FFF" stroke-width="10"/><path d="M30 0v30M0 15h60" stroke="#C8102E" stroke-width="6"/></svg></button>
+      </div>
+      <p class="lede">Tryck på ett eller flera ljud för att mixa dem. Tryck igen för att stänga av just det ljudet. Håll telefonen med samtalet nära högtalaren.</p>
+    </div>
   </header>
+
+  <div class="panel">
+    <div class="status">
+      <span class="lbl" id="lbl">Tyst</span>
+      <span class="now" id="now">Välj ett eller flera ljud</span>
+      <canvas id="meter" width="600" height="52" aria-hidden="true"></canvas>
+    </div>
+    <label class="vol" for="vol"><span data-i18n="vol">Volym</span> <input id="vol" type="range" min="0" max="1" step="0.01" value="1"></label>
+  </div>
 
   <div class="grid" id="grid"></div>
 
   <section class="drop">
-    <h2>Fejka avbrott</h2>
-    <p>Tryck på ett avslut: allt hackar sönder, dör tvärt och sedan kommer det avslutet. Lägg på direkt efteråt.</p>
+    <h2 data-i18n="drop">Fejka avbrott</h2>
+    <p>Tryck på ett avslut: ljuden tystnar tvärt och sedan kommer signalen. Lägg på direkt efteråt.</p>
     <div class="drops" role="group" aria-label="Bryt samtalet">
-      <button class="dropbtn" type="button" id="drop-dead" data-mode="dead"><span class="t">Död linje</span><span class="s">mobil, bara tystnad</span></button>
-      <button class="dropbtn" type="button" id="drop-busy" data-mode="busy"><span class="t">Upptagetton</span><span class="s">425 Hz</span></button>
-      <button class="dropbtn" type="button" id="drop-sit" data-mode="sit"><span class="t">Nätverksfel</span><span class="s">tre stigande toner</span></button>
+      <button class="dropbtn" type="button" id="drop-busy" data-mode="busy"><span class="t" data-i18n="busy">Upptagetton</span><span class="s">425 Hz</span></button>
+      <button class="dropbtn" type="button" id="drop-sit" data-mode="sit"><span class="t" data-i18n="sit">Nätverksfel</span><span class="s" data-i18n="sitS">tre stigande toner</span></button>
     </div>
   </section>
 
@@ -129,13 +200,7 @@ body{margin:0}
 
 <div class="bar">
   <div class="bar-in">
-    <div class="status">
-      <span class="lbl" id="lbl">Tyst</span>
-      <span class="now" id="now">Välj ett eller flera ljud</span>
-      <canvas id="meter" width="600" height="52" aria-hidden="true"></canvas>
-    </div>
-    <button class="btn" id="stopBtn" type="button">Stoppa allt</button>
-    <label class="vol" for="vol">Volym <input id="vol" type="range" min="0" max="1" step="0.01" value="0.85"></label>
+    <button class="btn solid" id="stopBtn" type="button" data-i18n="stop">Stoppa allt</button>
   </div>
 </div>
 
@@ -143,15 +208,21 @@ body{margin:0}
 const R=(a,b)=>a+Math.random()*(b-a), P=p=>Math.random()<p;
 let ctx,master,analyser,noise,wakeLock=null,raf=0,dropping=false;
 const active=new Map();
-let dropTimers=[];
+let dropTimers=[],dropBus=null;
 
 function init(){
   if(ctx) return;
   ctx=new (window.AudioContext||window.webkitAudioContext)();
   master=ctx.createGain(); master.gain.value=+document.getElementById('vol').value;
-  const comp=ctx.createDynamicsCompressor(); comp.threshold.value=-8; comp.ratio.value=3; comp.knee.value=10;
+  // Loudness chain for small phone speakers: cut useless sub-bass, lift the 1–4 kHz range the
+  // other phone's mic picks up best, squash hard, add makeup gain and soft-clip just under full scale.
+  const hp=ctx.createBiquadFilter(); hp.type='highpass'; hp.frequency.value=110; hp.Q.value=.7;
+  const pres=ctx.createBiquadFilter(); pres.type='peaking'; pres.frequency.value=2200; pres.Q.value=.8; pres.gain.value=6;
+  const comp=ctx.createDynamicsCompressor(); comp.threshold.value=-26; comp.ratio.value=8; comp.knee.value=6; comp.attack.value=.002; comp.release.value=.12;
+  const makeup=ctx.createGain(); makeup.gain.value=4;
+  const clip=ctx.createWaveShaper(); clip.curve=(()=>{const n=2048,c=new Float32Array(n);for(let i=0;i<n;i++){const x=(i*2/n-1)*3;c[i]=Math.tanh(x)*.98}return c})();
   analyser=ctx.createAnalyser(); analyser.fftSize=256;
-  master.connect(comp); comp.connect(analyser); analyser.connect(ctx.destination);
+  master.connect(hp).connect(pres).connect(comp).connect(makeup).connect(clip).connect(analyser); analyser.connect(ctx.destination);
   const b=ctx.createBuffer(1,ctx.sampleRate*2,ctx.sampleRate), d=b.getChannelData(0);
   for(let i=0;i<d.length;i++) d[i]=Math.random()*2-1;
   noise=b;
@@ -216,38 +287,33 @@ const scenes=[
       const f=R(400,2000),len=R(.03,.08),n=Math.floor(R(3,8));for(let i=0;i<n;i++)burst(out,t+i*len*1.15,len,{f,q:2,gain:.45,attack:.003});return n*len*1.15}
     return R(.1,.5);
   }},
- {id:'tag',name:'Tågkrasch',what:'Ett tåg dånar in i en bergvägg. Vagnar trycks ihop, stål slits sönder och berget rasar.',spec:'Ca 400 ton mot granit',
+ {id:'tag',name:'Tågkrasch',steady:true,what:'Ett tåg kraschar i full fart. Vagnar trycks ihop, plåt skrynklas och stål slits sönder.',spec:'Ca 400 ton i 120 km/h',
   setup(out,nodes,t0){
-    const rumble=bed(out,nodes,{type:'lowpass',f:120,q:.9,gain:.2});
+    const rumble=bed(out,nodes,{type:'lowpass',f:120,q:.9,gain:1.4});
     const sub=ctx.createOscillator(),sg=ctx.createGain();sub.frequency.value=38;sg.gain.value=.3;sub.connect(sg).connect(out);sub.start();nodes.push(sub);
-    return{rumble,d:distBus(out,150,8000,.9),ph:'approach',until:t0+R(1.5,3.5),n:0};
+    return{rumble,d:distBus(out,150,8000,.9),until:t0};
   },
   step(out,t,s){
-    const tear=(x,dur,g)=>{let y=x;while(y<x+dur){burst(s.d,y,R(.01,.05),{f:R(800,5000),q:1,gain:g*R(.4,1),attack:.001});y+=R(.008,.04)}};
-    if(s.ph==='approach'){
-      s.rumble.g.gain.setTargetAtTime(1.4,t,.7);
-      for(let i=0;i<3;i++)burst(out,t+R(0,.15),.03,{type:'lowpass',f:900,gain:R(.2,.5)});
-      if(t>=s.until)s.ph='crash';return R(.08,.2);
+    // Nonstop violence: no quiet build-up, no fading. Heavy hits, crumpling sheet metal, groaning steel.
+    const crumple=(x,dur,g)=>{let y=x;while(y<x+dur){burst(s.d,y,R(.04,.14),{f:R(250,1400),q:R(1.5,4),gain:g*R(.5,1),attack:.008});y+=R(.03,.09)}};
+    const groan=(x,dur)=>burst(s.d,x,dur,{f:R(200,500),f2:R(150,700),q:9,gain:1.6,attack:.05});
+    const hit=(x,g)=>burst(s.d,x,R(.15,.3),{f:R(300,900),q:2,gain:g,attack:.003});
+    s.rumble.g.gain.setTargetAtTime(R(1.2,1.6),t,.1);
+    if(t>=s.until){// major impact every couple of seconds
+      burst(s.d,t,R(1,1.6),{type:'lowpass',f:220,gain:3.5,attack:.001});
+      burst(s.d,t,.8,{f:900,q:.5,gain:2.2,attack:.001});
+      hit(t,1.8);crumple(t+.05,R(1,1.8),1.3);groan(t+.2,R(.8,1.6));
+      s.until=t+R(1.6,3.2);return R(.1,.25);
     }
-    if(s.ph==='crash'){
-      burst(s.d,t,1.6,{type:'lowpass',f:220,gain:3.5,attack:.001});
-      burst(s.d,t,.9,{f:1500,q:.4,gain:2.2,attack:.001});
-      burst(out,t,.15,{type:'highpass',f:1000,gain:1.8,attack:.0005});
-      metal(s.d,t,{base:400,gain:1.2});tear(t+.05,1.6,1.2);
-      s.ph='pile';s.n=Math.floor(R(5,12));return R(.2,.5);
-    }
-    if(s.ph==='pile'){
-      thud(s.d,t,{gain:R(1,1.7),f:R(40,70)});metal(s.d,t,{base:R(200,900),gain:R(.7,1.2)});tear(t,R(.2,.6),R(.6,1.1));
-      if(--s.n<=0){s.ph='rubble';s.until=t+R(2,4)}return R(.12,.6);
-    }
-    s.rumble.g.gain.setTargetAtTime(.25,t,.8);
-    for(let i=0;i<Math.floor(R(2,7));i++)burst(s.d,t+R(0,.25),R(.02,.08),{type:'lowpass',f:R(200,900),gain:R(.3,1.1),attack:.001});
-    if(P(.25))thud(s.d,t,{gain:R(.7,1.3),f:R(40,70)});
-    if(t>=s.until){s.ph='approach';s.until=t+R(1.5,3.5)}
-    return R(.05,.3);
+    const r=Math.random();
+    if(r<.35){thud(s.d,t,{gain:R(1.1,1.7),f:R(40,70)});hit(t,R(1,1.6))}
+    else if(r<.7)crumple(t,R(.3,.8),R(.9,1.3));
+    else if(r<.85)groan(t,R(.5,1.2));
+    else{hit(t,1.5);hit(t+R(.05,.15),1.3);thud(s.d,t,{gain:1.4,f:55})}
+    return R(.1,.32);
   }},
- {id:'rymd',name:'Rymdstation',what:'Digitala störningar: surr, sönderhackad data och krasande signal.',spec:'TDMA-surr 217 Hz · 2-bitars signal',
-  setup(out,nodes){
+ {id:'rymd',name:'Rymdstation',what:'Digitala störningar och en sönderhackad utomjordisk röst som pratar i bakgrunden.',spec:'TDMA-surr 217 Hz · 3-bitars röst',
+  setup(out,nodes,t0){
     // GSM-style buzz: noise chopped by a 217 Hz square wave
     const ns=noiseSrc(),hp=ctx.createBiquadFilter(),chop=ctx.createGain(),bz=ctx.createGain();
     hp.type='highpass';hp.frequency.value=900;chop.gain.value=0;bz.gain.value=0;
@@ -257,17 +323,36 @@ const scenes=[
     const ds=noiseSrc(),dfl=ctx.createBiquadFilter(),cr=ctx.createWaveShaper(),dg=ctx.createGain();
     dfl.type='bandpass';dfl.Q.value=3;dfl.frequency.value=1500;cr.curve=crushCurve(2);dg.gain.value=0;
     ds.connect(dfl).connect(cr).connect(dg).connect(out);ds.start();nodes.push(ds);
-    const hiss=bed(out,nodes,{type:'highpass',f:4000,gain:.04});
-    return{bz,dg,dfl,hiss};
+    // Alien voice: glottal saw -> three formant filters -> ring modulator -> 3-bit crusher -> gate
+    const vo=ctx.createOscillator();vo.type='sawtooth';vo.frequency.value=140;
+    const sum=ctx.createGain();sum.gain.value=1;
+    const fm=[700,1200,2600].map(fr=>{const b=ctx.createBiquadFilter();b.type='bandpass';b.frequency.value=fr;b.Q.value=9;vo.connect(b);b.connect(sum);return b});
+    const ring=ctx.createGain();ring.gain.value=0;const rm=ctx.createOscillator();rm.frequency.value=90;rm.connect(ring.gain);
+    const vc=ctx.createWaveShaper();vc.curve=crushCurve(3);const vg=ctx.createGain();vg.gain.value=0;
+    sum.connect(ring).connect(vc).connect(vg).connect(out);vo.start();rm.start();nodes.push(vo,rm);
+    return{bz,dg,dfl,vo,fm,rm,vg,vn:t0+R(.2,.8),left:Math.floor(R(3,9))};
   },
   step(out,t,s){
+    // Schedule the alien's syllables ahead on their own clock
+    const V=[[300,2300,3000],[400,2000,2600],[700,1200,2600],[800,1400,2500],[350,800,2400],[500,1000,2300],[250,1700,2900]];
+    while(s.vn<t+.35){
+      const x=s.vn,len=R(.06,.22),v=V[Math.floor(Math.random()*V.length)],sh=R(.75,1.5);
+      s.vo.frequency.setValueAtTime(R(70,140),x);s.vo.frequency.exponentialRampToValueAtTime(R(90,320),x+len);
+      s.fm.forEach((b,i)=>b.frequency.setTargetAtTime(v[i]*sh,x,.015));
+      s.rm.frequency.setValueAtTime(R(25,260),x);
+      s.vg.gain.setValueAtTime(R(.5,1.1),x);
+      if(P(.35)){const k=x+len*R(.3,.6);s.vg.gain.setValueAtTime(0,k);s.vg.gain.setValueAtTime(R(.5,1),k+.02)}
+      s.vg.gain.setValueAtTime(0,x+len*.9);
+      s.vn+=len*R(1,1.3);
+      if(--s.left<=0){s.left=Math.floor(R(3,10));s.vn+=R(.25,1.1)}
+    }
     const r=Math.random();
     if(r<.3){const d=R(.3,1.6);s.bz.gain.setValueAtTime(R(.3,.8),t);s.bz.gain.setValueAtTime(0,t+d);return P(.5)?d:R(.1,d)}
-    if(r<.55){const d=R(.2,1.2);s.dg.gain.setValueAtTime(R(.08,.22),t);
+    if(r<.58){const d=R(.2,1.2);s.dg.gain.setValueAtTime(R(.08,.22),t);
       for(let x=t;x<t+d;x+=R(.012,.035))s.dfl.frequency.setValueAtTime(R(300,6000),x);
       s.dg.gain.setValueAtTime(0,t+d);return P(.5)?d:R(.05,d)}
-    if(r<.68){const d=R(.15,.8);s.hiss.g.gain.setValueAtTime(0,t);s.bz.gain.setValueAtTime(0,t);s.dg.gain.setValueAtTime(0,t);s.hiss.g.gain.setValueAtTime(.04,t+d);return d}
-    if(r<.82){let x=t;const n=Math.floor(R(4,12)),len=R(.015,.05),f=R(800,4000);for(let i=0;i<n;i++){burst(out,x,len,{f,q:2,gain:.5,attack:.001});x+=len*R(1,1.6)}return x-t}
+    if(r<.68){const d=R(.15,.6);s.bz.gain.setValueAtTime(0,t);s.dg.gain.setValueAtTime(0,t);return d}
+    if(r<.84){let x=t;const n=Math.floor(R(4,12)),len=R(.015,.05),f=R(800,4000);for(let i=0;i<n;i++){burst(out,x,len,{f,q:2,gain:.5,attack:.001});x+=len*R(1,1.6)}return x-t}
     if(r<.92){clicks(out,t,Math.floor(R(3,10)),.6);return .2}
     return R(.05,.4);
   }},
@@ -287,7 +372,7 @@ const scenes=[
     else burst(out,t,R(.5,1.5),{f:R(700,1400),q:.8,gain:.8,attack:.1});
     return R(.015,.18);
   }},
- {id:'storm',name:'Storm på fjället',what:'Saker krossas och bryts sönder med full kraft.',spec:'Takpannor · plåt · glas · virke',
+ {id:'storm',name:'Hagelstorm',what:'Saker krossas och bryts sönder med full kraft.',spec:'Takpannor · plåt · glas · virke',
   setup(out){return{d:distBus(out,60,9000,1.1)}},
   step(out,t,s){
     const r=Math.random();let d;
@@ -312,21 +397,39 @@ const scenes=[
     if(P(.35)){const x=t+R(0,d);burst(s.d,x,R(.1,.4),{f:R(500,3000),q:.4,gain:R(1.5,2.5),attack:.0008});thud(s.d,x,{gain:R(1,1.5),f:R(40,80)})}
     return P(.5)?R(.02,d):d+R(0,.5);
   }},
- {id:'bygg',name:'Byggarbetsplats',what:'Bilning, våldsamma hammarslag och metall som gnids mot metall. Helt oregelbundet.',spec:'Ingen takt. Ingen finess.',
-  setup(out){return{d:distBus(out,120,8000,1)}},
+ {id:'bygg',name:'Byggarbetsplats',what:'Bilning, borrmaskin, våldsamma hammarslag och metall som gnids mot metall. Helt oregelbundet.',spec:'Ingen takt. Ingen finess.',
+  smooth:true,
+  setup(out){const o=ctx.createGain();o.gain.value=2.2;o.connect(out);return{o,d:distBus(o,4,6000,1.3)}},
   step(out,t,s){
+    out=s.o;// louder than the other scenes
+    // Analog only: no tiny grains, no clicks, no hiss
+    const clang=(x,g)=>{burst(s.d,x,R(.06,.12),{f:R(250,700),q:2.5,gain:g*1.4,attack:.002});thud(s.d,x,{gain:g*.5,f:R(70,110)})};
+    // No oscillators, no hard clipping, no stepped pitch: everything is filtered noise with smooth envelopes
+    const tonal=(x,dur,f0,path,q,g)=>{// resonant noise band that glides smoothly between pitches
+      const n=noiseSrc(),bp=ctx.createBiquadFilter(),bp2=ctx.createBiquadFilter(),v=ctx.createGain();
+      bp.type=bp2.type='bandpass';bp.Q.value=bp2.Q.value=q;bp.frequency.setValueAtTime(f0,x);bp2.frequency.setValueAtTime(f0,x);
+      path.forEach(([dt,f,tc])=>{bp.frequency.setTargetAtTime(f,x+dt,tc);bp2.frequency.setTargetAtTime(f,x+dt,tc)});
+      v.gain.setValueAtTime(0,x);v.gain.linearRampToValueAtTime(g,x+.12);v.gain.setValueAtTime(g,x+dur-.15);v.gain.linearRampToValueAtTime(0,x+dur);
+      n.connect(bp).connect(bp2).connect(v).connect(s.d);n.start(x,Math.random()*1.5);n.stop(x+dur+.05)};
+    const grind=(x,dur)=>{// metal on metal: narrow screeching resonances drifting slowly
+      const f=R(900,1800),p=[];for(let y=.2;y<dur-.2;y+=R(.25,.5))p.push([y,f*R(.85,1.2),.15]);
+      tonal(x,dur,f,p,22,9);tonal(x,dur,f*1.47,p.map(([a,b,c])=>[a,b*1.47,c]),22,5)};
+    const drill=(x,dur)=>{// electric drill: whine spins up, bogs under load, spins down
+      const top=R(700,1000),p=[[0,top,.12]];for(let y=.4;y<dur-.3;y+=R(.2,.45))p.push([y,top*(P(.35)?R(.65,.8):R(.97,1.03)),.07]);p.push([dur-.25,150,.08]);
+      tonal(x,dur,150,p,18,8);tonal(x,dur,300,p.map(([a,b,c])=>[a,b*2,c]),18,4);
+      for(let y=x+.3;y<x+dur-.2;y+=R(.08,.14))burst(s.d,y,.09,{type:'lowpass',f:R(200,380),gain:R(.4,.7),attack:.012})};
     const r=Math.random();let d;
-    if(r<.28){const n=Math.floor(R(5,35));let x=t;for(let i=0;i<n;i++){burst(out,x,.025,{type:'lowpass',f:R(1800,3000),gain:R(.3,.7)});x+=R(.03,.07)}d=x-t}
-    else if(r<.45){// violent hammer blows, 1–3 with uneven spacing
-      let x=t;const n=Math.floor(R(1,4));for(let i=0;i<n;i++){
-        thud(s.d,x,{gain:R(1.2,1.8),f:R(50,80)});burst(s.d,x,.05,{type:'highpass',f:1500,gain:2,attack:.0004});metal(s.d,x,{base:R(400,1200),gain:1});
-        x+=R(.3,.9)}d=x-t}
-    else if(r<.68){// metal grinding against metal: dense rough grains, swelling unevenly
-      d=R(.6,2);const w=R(3,9);let x=t;
-      while(x<t+d){const sw=Math.sin((x-t)*w);burst(s.d,x,R(.004,.02),{f:R(900,3500),q:R(2,5),gain:R(.3,1)*(.4+.6*sw*sw),attack:.0005});x+=R(.003,.018)}}
-    else if(r<.80){metal(out,t,{base:R(200,800),gain:.5,decay:.9});let x=t,g=.4;for(let i=0;i<5;i++){x+=R(.06,.25)*(1-i*.15);g*=.6;metal(out,x,{base:R(200,800),gain:g,decay:.3})}d=x-t}
-    else if(r<.92){const n=Math.floor(R(10,30));for(let i=0;i<n;i++)burst(out,t+R(0,1),R(.02,.08),{type:'lowpass',f:R(400,1500),gain:R(.2,.6)});d=1}
-    else{metal(out,t,{base:R(600,1500),gain:.4});thud(out,t,{gain:.6,f:90});d=.1}
+    if(r<.05){d=R(1.2,2.5);drill(t,d)}
+    else if(r<.17){// jackhammer, slow heavy blows
+      const n=Math.floor(R(4,12));let x=t;for(let i=0;i<n;i++){burst(out,x,.05,{type:'lowpass',f:R(600,1000),gain:R(.6,.9),attack:.003});thud(out,x,{gain:R(.4,.7),f:R(60,90)});x+=R(.18,.4)}d=x-t}
+    else if(r<.50){// violent hammer blows, 1–3 with uneven spacing
+      let x=t;const n=Math.floor(R(1,4));for(let i=0;i<n;i++){thud(s.d,x,{gain:R(1.2,1.8),f:R(50,80)});clang(x,R(1.2,1.8));x+=R(.4,1)}d=x-t}
+    else if(r<.80){d=R(.8,2.2);grind(t,d)}
+    else if(r<.87){// dropped steel bouncing
+      let x=t,g=1.3;for(let i=0;i<5;i++){clang(x,g);x+=R(.1,.3)*(1-i*.15);g*=.6}d=x-t}
+    else if(r<.94){// scrap collapsing, low and heavy
+      for(let i=0;i<Math.floor(R(6,14));i++){const x=t+R(0,1);burst(out,x,R(.05,.1),{type:'lowpass',f:R(250,600),gain:R(.5,.9),attack:.004})}d=1}
+    else{clang(t,1.4);thud(out,t,{gain:.7,f:90});d=.2}
     return P(.35)?R(.05,d):d+R(0,.6);
   }}
 ];
@@ -338,9 +441,9 @@ function startScene(sc){
   const timer=setInterval(()=>{
     const h=ctx.currentTime+.25;
     while(next<h)next+=Math.max(.01,sc.step(out,next,st));
-    while(nextDyn<h){const r=Math.random(),g=out.gain;
-      if(r<.2)g.setValueAtTime(0,nextDyn);
-      else if(r<.4)g.setValueAtTime(R(1.7,2.8),nextDyn);
+    while(!sc.steady&&nextDyn<h){const r=Math.random(),g=out.gain;
+      if(r<.2)sc.smooth?g.setTargetAtTime(0,nextDyn,.15):g.setValueAtTime(0,nextDyn);
+      else if(r<.4)sc.smooth?g.setTargetAtTime(R(1.7,2.8),nextDyn,.1):g.setValueAtTime(R(1.7,2.8),nextDyn);
       else if(r<.56)g.setTargetAtTime(R(.12,.35),nextDyn,.06);
       else g.setTargetAtTime(R(.6,1.1),nextDyn,.04);
       nextDyn+=r<.2?R(.2,2.2):R(.15,2.5)}
@@ -354,8 +457,14 @@ function stopScene(id,fast){
   setTimeout(()=>{c.nodes.forEach(n=>{try{n.stop()}catch(e){}});c.out.disconnect()},fast?60:500);
 }
 function stopAll(fast){[...active.keys()].forEach(id=>stopScene(id,fast))}
+function cancelDrop(){
+  dropTimers.forEach(clearTimeout);dropTimers=[];
+  if(dropBus){try{dropBus.gain.setValueAtTime(0,ctx.currentTime);dropBus.disconnect()}catch(e){}dropBus=null}
+  dropping=false;document.querySelectorAll('.dropbtn').forEach(x=>x.classList.remove('busy'));
+}
 function toggle(sc){
   init();ctx.resume();
+  if(dropping)cancelDrop();
   if(active.has(sc.id))stopScene(sc.id);else startScene(sc);
   updateUI();
   try{if(active.size&&navigator.wakeLock&&!wakeLock)navigator.wakeLock.request('screen').then(w=>{wakeLock=w;w.addEventListener('release',()=>wakeLock=null)}).catch(()=>{})}catch(e){}
@@ -363,47 +472,71 @@ function toggle(sc){
 }
 
 // Telephone-band colored tone: hard on/off, slight harmonics, 300–3400 Hz
-function telTone(t,f,dur,gain=.32){
+function telTone(t,f,dur,gain=.32,dest=master){
   const o=ctx.createOscillator(),g=ctx.createGain(),ws=ctx.createWaveShaper(),bp=ctx.createBiquadFilter(),hp=ctx.createBiquadFilter();
   o.frequency.value=f;ws.curve=distCurve(2);bp.type='lowpass';bp.frequency.value=3400;hp.type='highpass';hp.frequency.value=300;
   g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(gain,t+.004);g.gain.setValueAtTime(gain,t+dur-.004);g.gain.linearRampToValueAtTime(0,t+dur);
-  o.connect(g).connect(ws).connect(hp).connect(bp).connect(master);o.start(t);o.stop(t+dur+.02);
+  o.connect(g).connect(ws).connect(hp).connect(bp).connect(dest);o.start(t);o.stop(t+dur+.02);
 }
 function dropCall(mode,btn){
-  if(dropping)return;init();ctx.resume();
+  init();ctx.resume();
+  if(dropping){const same=btn.classList.contains('busy');cancelDrop();if(same){updateUI();return}}
   document.querySelectorAll('.dropbtn').forEach(x=>x.classList.toggle('busy',x===btn));
-  dropping=true;setStatus('Avbrott','Samtalet bryts…');
+  dropping=true;setStatus(T('dropping'),T('breaking'));
   const t=ctx.currentTime+.02;
-  // Codec breaking up for ~0.7 s, on top of whatever is playing
-  let x=t;while(x<t+.7){burst(master,x,R(.01,.04),{f:R(800,3500),q:R(2,6),gain:R(.3,.6)});x+=R(.03,.08)}
-  burst(master,t+.3,.35,{f:2000,f2:400,q:2,gain:.3,attack:.01});
-  dropTimers.push(setTimeout(()=>{stopAll(true);updateUI(true)},720));
-  const s=t+.75+R(.6,1.1);let end=s;
-  if(mode==='busy'){for(let i=0;i<10;i++)telTone(s+i*.5,425,.25);end=s+5}
-  else if(mode==='sit'){for(let k=0;k<2;k++){const b=s+k*2.6;[950,1400,1800].forEach((f,i)=>telTone(b+i*.34,f,.33,.28))}end=s+3.6}
+  stopAll(true);updateUI(true);
+  dropBus=ctx.createGain();dropBus.connect(master);const db=dropBus;
+  const s=t+R(.4,.8);let end=s;
+  if(mode==='busy'){for(let i=0;i<10;i++)telTone(s+i*.5,425,.25,.32,db);end=s+5}
+  else if(mode==='sit'){for(let k=0;k<2;k++){const b=s+k*2.6;[950,1400,1800].forEach((f,i)=>telTone(b+i*.34,f,.33,.28,db))}end=s+3.6}
   else end=s;
   dropTimers.push(setTimeout(()=>{dropping=false;document.querySelectorAll('.dropbtn').forEach(x=>x.classList.remove('busy'));updateUI()},(end-ctx.currentTime+.3)*1000));
   if(!raf)draw();
 }
 
+const I18N={
+ sv:{title:'Störsändaren',eyebrow:'Soundboard för samtal du inte vill ha',t1:'Stör',t2:'sändaren',vol:'Volym',drop:'Fejka avbrott',busy:'Upptagetton',sit:'Nätverksfel',sitS:'tre stigande toner',stop:'Stoppa allt',
+   silent:'Tyst',pick:'Välj ett eller flera ljud',onair:'Sänder nu',mixing:n=>`Mixar ${n} ljud`,dropping:'Avbrott',breaking:'Samtalet bryts…',ch:'KANAL',live:'SÄNDER'},
+ en:{title:'Call Jammer',eyebrow:"Soundboard for calls you don't want",t1:'Call ',t2:'Jammer',vol:'Volume',drop:'Fake a dropped call',busy:'Busy tone',sit:'Network error',sitS:'three rising tones',stop:'Stop all',
+   silent:'Silent',pick:'Pick one or more sounds',onair:'On air',mixing:n=>`Mixing ${n} sounds`,dropping:'Dropping',breaking:'Call breaking up…',ch:'CHANNEL',live:'ON AIR'}
+};
+const SCENE_EN={"tackning": {"name": "Bad reception", "what": "The line breaks up into robot mush, digital bursts and sudden silence.", "spec": "Voice codec in 20 ms frames"}, "tag": {"name": "Train crash", "what": "A train crashes at full speed. Cars crumple, sheet metal folds and steel tears apart.", "spec": "About 400 tonnes at 120 km/h"}, "rymd": {"name": "Space station", "what": "Digital interference and a shredded alien voice talking in the background.", "spec": "TDMA buzz 217 Hz · 3-bit voice"}, "metall": {"name": "Death metal", "what": "Violent attacks of distortion, bass blasts and screams that come and go.", "spec": "Tempo: none · Mercy: none"}, "storm": {"name": "Hailstorm", "what": "Things get smashed and torn apart at full force.", "spec": "Roof tiles · sheet metal · glass · timber"}, "bygg": {"name": "Construction site", "what": "Jackhammer, power drill, violent hammer blows and metal grinding on metal. Completely irregular.", "spec": "No rhythm. No finesse."}};
+scenes.forEach(sc=>{sc.i18n={sv:{name:sc.name,what:sc.what,spec:sc.spec},en:SCENE_EN[sc.id]}});
+let lang='sv';
+try{const v=localStorage.getItem('lang');if(v==='sv'||v==='en')lang=v;else if(!/^sv\b/i.test(navigator.language||'sv'))lang='en'}catch(e){}
+const T=k=>I18N[lang][k];
 const grid=document.getElementById('grid');
 scenes.forEach((sc,i)=>{
   const b=document.createElement('button');b.type='button';b.className='tile';b.id='t-'+sc.id;b.setAttribute('aria-pressed','false');
-  b.innerHTML=`<span class="ch"><span>KANAL ${String(i+1).padStart(2,'0')}</span><span class="live"><span class="dot"></span>SÄNDER</span></span>
-  <span class="name">${sc.name}</span><span class="what">${sc.what}</span><span class="spec">${sc.spec}</span>`;
+  b.dataset.n=String(i+1).padStart(2,'0');
   b.addEventListener('click',()=>toggle(sc));grid.appendChild(b);
 });
+function renderTiles(){
+  scenes.forEach(sc=>{const b=document.getElementById('t-'+sc.id),x=sc.i18n[lang];sc.name=x.name;
+    b.innerHTML=`<span class="live"><span class="dot"></span>${T('live')}</span><span class="ch"><span>${T('ch')} ${b.dataset.n}</span></span>
+  <span class="name">${x.name}</span><span class="what">${x.what}</span><span class="spec">${x.spec}</span>`});
+}
+function setLang(l){
+  lang=l;try{localStorage.setItem('lang',l)}catch(e){}
+  document.documentElement.lang=l;document.title=T('title');
+  document.querySelectorAll('[data-i18n]').forEach(el=>{el.textContent=T(el.dataset.i18n)});
+  document.querySelectorAll('.flag').forEach(f=>f.setAttribute('aria-pressed',String(f.dataset.lang===l)));
+  renderTiles();
+  if(dropping)setStatus(T('dropping'),T('breaking'));else updateUI();
+  if(typeof fitEyebrow==='function')fitEyebrow();
+}
+document.querySelectorAll('.flag').forEach(f=>f.addEventListener('click',()=>setLang(f.dataset.lang)));
 function setStatus(l,n){document.getElementById('lbl').textContent=l;document.getElementById('now').textContent=n}
 function updateUI(keepStatus){
   document.querySelectorAll('.tile').forEach(t=>t.setAttribute('aria-pressed',String(active.has(t.id.slice(2)))));
   if(keepStatus===true||dropping)return;
   const names=[...active.values()].map(c=>c.sc.name);
-  if(!names.length)setStatus('Tyst','Välj ett eller flera ljud');
-  else setStatus(names.length>1?`Mixar ${names.length} ljud`:'Sänder nu',names.join(' + '));
+  if(!names.length)setStatus(T('silent'),T('pick'));
+  else setStatus(names.length>1?T('mixing')(names.length):T('onair'),names.join(' + '));
 }
 // Stop all: close the whole audio engine so every sound dies instantly
 function hardStop(){
-  dropTimers.forEach(clearTimeout);dropTimers=[];
+  dropTimers.forEach(clearTimeout);dropTimers=[];dropBus=null;
   active.forEach(c=>clearInterval(c.timer));active.clear();
   dropping=false;document.querySelectorAll('.dropbtn').forEach(x=>x.classList.remove('busy'));
   if(ctx){const c=ctx;ctx=null;master=null;analyser=null;try{c.close()}catch(e){}}
@@ -412,6 +545,19 @@ function hardStop(){
 document.getElementById('stopBtn').addEventListener('click',hardStop);
 document.querySelectorAll('.dropbtn').forEach(b=>b.addEventListener('click',()=>dropCall(b.dataset.mode,b)));
 document.getElementById('vol').addEventListener('input',e=>{if(master)master.gain.setTargetAtTime(+e.target.value,ctx.currentTime,.02)});
+
+// Stretch the eyebrow line to exactly the width of the big title
+function fitEyebrow(){
+  const ey=document.querySelector('.eyebrow'),h=document.querySelector('h1');if(!ey||!h)return;
+  ey.style.letterSpacing='';ey.style.fontSize='';
+  const w=el=>{const r=document.createRange();r.selectNodeContents(el);return r.getBoundingClientRect().width};
+  const target=w(h),cur=w(ey),n=ey.textContent.length;
+  if(cur>target){ey.style.fontSize=(12*target/cur).toFixed(2)+'px'}
+  else if(n>1){const ls=parseFloat(getComputedStyle(ey).letterSpacing)||0;ey.style.letterSpacing=(ls+(target-cur)/n).toFixed(2)+'px'}
+}
+setLang(lang);
+fitEyebrow();window.addEventListener('resize',fitEyebrow);
+try{document.fonts.ready.then(fitEyebrow)}catch(e){}
 
 const cv=document.getElementById('meter'),g2=cv.getContext('2d');
 function draw(){

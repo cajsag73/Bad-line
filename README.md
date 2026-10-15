@@ -3,17 +3,19 @@ Soundboard för samtal du inte vill ha.
 
 Sex störningsljud som skapas live i webbläsaren med Web Audio, utan ljudfiler:
 
-- **Dålig täckning** – linjen hackar sönder, robotgröt och död linje
-- **Tågkrasch** – ett tåg som dånar in i en bergvägg
-- **Rymdstation** – digitala störningar och sönderhackad signal
+- **Dålig täckning** – linjen hackar sönder i robotgröt, digitala smällar och tvär tystnad
+- **Tågkrasch** – ett tåg som kraschar i full fart, oavbrutet våld och skrynklande plåt
+- **Rymdstation** – digitala störningar och en sönderhackad utomjordisk röst
 - **Dödsmetall** – våldsamma attacker av distorsion utan takt
-- **Storm på fjället** – saker som krossas och bryts sönder
-- **Byggarbetsplats** – bilning, våldsamma hammarslag och metall mot metall
+- **Hagelstorm** – saker som krossas och bryts sönder
+- **Byggarbetsplats** – hammarslag, metall mot metall, bilning och ibland en borrmaskin
 
-Tryck på flera för att mixa. Alla ljud växlar oregelbundet mellan starkt, svagt och helt tyst. Knappen **Bryt samtalet** hackar sönder allt och avslutar med död linje, upptagetton eller nätverksfelston.
+Tryck på flera för att mixa. Ljuden växlar oregelbundet mellan starkt, svagt och tyst (utom tågkraschen, som aldrig ger upp). Under **Fejka avbrott** finns upptagetton och nätverksfelston som tystnar så fort du trycker på ett annat ljud. **Stoppa allt** tystar allt direkt.
+
+Ljudet går genom en kompressor och förstärkning anpassad för mobilhögtalare, så att det hörs tydligt i en annan telefon.
 
 ## Språk
-`index.html` är på svenska, `en.html` är den engelska versionen (Call Jammer). Sidorna länkar till varandra.
+Svenska och engelska (Call Jammer) finns i samma app. Byt med flaggorna under rubriken. Valet sparas, och första gången väljs språk efter telefonens inställning.
 
 ## Använd
 Öppna `index.html` i mobilens webbläsare och håll telefonen med samtalet nära högtalaren. Ljud kan bara starta efter ett tryck.
