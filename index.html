@@ -3,13 +3,18 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#12161C">
+<meta name="description" content="Soundboard för samtal du inte vill ha. Störningsljud att spela i bakgrunden under ett samtal.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <title>Störsändaren</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <style>
-:root{padding-top:env(safe-area-inset-top,0px);color-scheme:light}
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
 body{margin:0}
 [hidden]{display:none!important}
 /* Layout: signal-panel — header, two-column grid of channel tiles, fixed transmit bar at the bottom */
@@ -146,6 +151,10 @@ h1{font-size:clamp(56px,18vw,130px);line-height:.85;white-space:nowrap;padding-r
 .about-body ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:8px;font-size:14.5px;line-height:1.45}
 .about-body b{color:var(--accent)}
 .about-box .btn{align-self:flex-start}
+.credits{border-top:1.5px solid var(--line);padding-top:10px;display:flex;flex-direction:column;gap:3px;font-family:var(--mono);font-size:12.5px;color:var(--muted)}
+.credits a{color:var(--accent)}
+.credits .sel{color:var(--ink);user-select:all;-webkit-user-select:all}
+.credits .disclaimer{margin-top:4px;font-family:var(--body);font-size:12.5px;line-height:1.4}
 </style>
 </head>
 <body>
@@ -200,6 +209,12 @@ h1{font-size:clamp(56px,18vw,130px);line-height:.85;white-space:nowrap;padding-r
   <div class="about-box" role="dialog" aria-modal="true" aria-labelledby="aboutTitle">
     <h2 id="aboutTitle" data-i18n="aboutTitle">Så funkar det</h2>
     <div class="about-body" id="aboutBody"></div>
+    <div class="credits">
+      <div><span data-i18n="madeBy">Gjord av</span> Cajsa Gustafsson</div>
+      <div><span data-i18n="contact">Kontakt</span>: <span class="sel">cajsa.g.art@gmail.com</span></div>
+      <div><a href="https://cajsag73.github.io/storsandaren/integritet.html" target="_blank" rel="noopener" data-i18n="privacy">Integritetspolicy</a> · <span data-i18n="version">Version</span> 1.0</div>
+      <div class="disclaimer" data-i18n="disclaimer">Appen spelar bara upp ljud i högtalaren. Den påverkar inte telefonnätet, samtal eller andra enheter.</div>
+    </div>
     <button type="button" class="btn solid" id="aboutClose" data-i18n="close">Stäng</button>
   </div>
 </div>
@@ -504,9 +519,9 @@ function dropCall(mode,btn){
 }
 
 const I18N={
- sv:{title:'Störsändaren',eyebrow:'Soundboard för samtal du inte vill ha',t1:'Stör',t2:'sändaren',vol:'Volym',drop:'Fejka avbrott',busy:'Upptagetton',sit:'Nätverksfel',sitS:'tre stigande toner',about:'Om',aboutTitle:'Så funkar det',close:'Stäng',
+ sv:{title:'Störsändaren',eyebrow:'Soundboard för samtal du inte vill ha',t1:'Stör',t2:'sändaren',vol:'Volym',drop:'Fejka avbrott',busy:'Upptagetton',sit:'Nätverksfel',sitS:'tre stigande toner',about:'Om',aboutTitle:'Så funkar det',close:'Stäng',madeBy:'Gjord av',contact:'Kontakt',privacy:'Integritetspolicy',version:'Version',disclaimer:'Appen spelar bara upp ljud i högtalaren. Den påverkar inte telefonnätet, samtal eller andra enheter.',
    silent:'Tyst',pick:'Välj ett eller flera ljud',onair:'Sänder nu',mixing:n=>`Mixar ${n} ljud`,dropping:'Avbrott',breaking:'Samtalet bryts…',ch:'KANAL',live:'SÄNDER'},
- en:{title:'Call Jammer',eyebrow:"Soundboard for calls you don't want",t1:'Call ',t2:'Jammer',vol:'Volume',drop:'Fake a dropped call',busy:'Busy tone',sit:'Network error',sitS:'three rising tones',about:'About',aboutTitle:'How it works',close:'Close',
+ en:{title:'Call Jammer',eyebrow:"Soundboard for calls you don't want",t1:'Call ',t2:'Jammer',vol:'Volume',drop:'Fake a dropped call',busy:'Busy tone',sit:'Network error',sitS:'three rising tones',about:'About',aboutTitle:'How it works',close:'Close',madeBy:'Made by',contact:'Contact',privacy:'Privacy policy',version:'Version',disclaimer:'The app only plays sound through the speaker. It does not affect the phone network, calls or other devices.',
    silent:'Silent',pick:'Pick one or more sounds',onair:'On air',mixing:n=>`Mixing ${n} sounds`,dropping:'Dropping',breaking:'Call breaking up…',ch:'CHANNEL',live:'ON AIR'}
 };
 const SCENE_EN={"tackning": {"name": "Bad reception", "what": "The line breaks up into robot mush, digital bursts and sudden silence.", "spec": "Voice codec in 20 ms frames"}, "tag": {"name": "Train crash", "what": "A train crashes at full speed. Cars crumple, sheet metal folds and steel tears apart.", "spec": "4,000 tonnes of metal at 120 km/h"}, "rymd": {"name": "Space station", "what": "Digital interference and a shredded alien voice talking in the background.", "spec": "TDMA buzz 217 Hz · 3-bit voice"}, "metall": {"name": "Death metal", "what": "Violent attacks of distortion, bass blasts and screams that come and go.", "spec": "Tempo: none · Mercy: none"}, "storm": {"name": "Hailstorm", "what": "Things get smashed and torn apart at full force.", "spec": "Roof tiles · sheet metal · glass · timber"}, "bygg": {"name": "Construction site", "what": "Jackhammer, power drill, violent hammer blows and metal grinding on metal. Completely irregular.", "spec": "No rhythm. No finesse."}};
@@ -605,6 +620,9 @@ function draw(){
     g2.fillStyle=v>.04?acc:ln;g2.fillRect(i*bw+2,h-bh,bw-4,bh);
   }
 }
+</script>
+<script>
+if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost')){addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}))}
 </script>
 </body>
 </html>

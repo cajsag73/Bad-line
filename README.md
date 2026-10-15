@@ -17,5 +17,8 @@ Ljudet går genom en kompressor och förstärkning anpassad för mobilhögtalare
 ## Språk
 Svenska och engelska (Call Jammer) finns i samma app. Byt med flaggorna under rubriken. Valet sparas, och första gången väljs språk efter telefonens inställning.
 
+## Publicering
+Se [PUBLICERA.md](PUBLICERA.md) för steg för steg till Google Play. Butikstexter och grafik finns i `butik/`. Integritetspolicyn ligger i `integritet.html`.
+
 ## Använd
 Öppna `index.html` i mobilens webbläsare och håll telefonen med samtalet nära högtalaren. Ljud kan bara starta efter ett tryck.
