@@ -436,37 +436,51 @@ const scenes=[
   }},
  {id:'bygg',name:'Byggarbetsplats',what:'Bilning, borrmaskin, våldsamma hammarslag och metall som gnids mot metall. Helt oregelbundet.',spec:'Ingen takt. Ingen finess.',
   smooth:true,
-  setup(out){const o=ctx.createGain();o.gain.value=2.2;o.connect(out);return{o,d:distBus(o,4,6000,1.3)}},
+  setup(out){
+    // Everything here is built from soft pink noise with slow attacks: no white-noise hiss, no 1 ms clicks,
+    // no distortion and no narrow resonances, so nothing sounds digital.
+    const o=ctx.createGain();o.gain.value=1.5;o.connect(out);
+    const len=ctx.sampleRate*4,pb=ctx.createBuffer(1,len,ctx.sampleRate),d=pb.getChannelData(0);
+    let b0=0,b1=0,b2=0,b3=0,b4=0,b5=0,b6=0;
+    for(let i=0;i<len;i++){const w=Math.random()*2-1;
+      b0=.99886*b0+w*.0555179;b1=.99332*b1+w*.0750759;b2=.969*b2+w*.153852;b3=.8665*b3+w*.3104856;b4=.55*b4+w*.5329522;b5=-.7616*b5-w*.016898;
+      d[i]=(b0+b1+b2+b3+b4+b5+b6+w*.5362)*.11;b6=w*.115926}
+    return{o,pb}},
   step(out,t,s){
-    out=s.o;// louder than the other scenes
-    // Analog only: no tiny grains, no clicks, no hiss
-    const clang=(x,g)=>{burst(s.d,x,R(.06,.12),{f:R(250,700),q:2.5,gain:g*1.4,attack:.002});thud(s.d,x,{gain:g*.5,f:R(70,110)})};
-    // No oscillators, no hard clipping, no stepped pitch: everything is filtered noise with smooth envelopes
-    const tonal=(x,dur,f0,path,q,g)=>{// resonant noise band that glides smoothly between pitches
-      const n=noiseSrc(),bp=ctx.createBiquadFilter(),bp2=ctx.createBiquadFilter(),v=ctx.createGain();
-      bp.type=bp2.type='bandpass';bp.Q.value=bp2.Q.value=q;bp.frequency.setValueAtTime(f0,x);bp2.frequency.setValueAtTime(f0,x);
-      path.forEach(([dt,f,tc])=>{bp.frequency.setTargetAtTime(f,x+dt,tc);bp2.frequency.setTargetAtTime(f,x+dt,tc)});
-      v.gain.setValueAtTime(0,x);v.gain.linearRampToValueAtTime(g,x+.12);v.gain.setValueAtTime(g,x+dur-.15);v.gain.linearRampToValueAtTime(0,x+dur);
-      n.connect(bp).connect(bp2).connect(v).connect(s.d);n.start(x,Math.random()*1.5);n.stop(x+dur+.05)};
-    const grind=(x,dur)=>{// metal on metal: narrow screeching resonances drifting slowly
-      const f=R(900,1800),p=[];for(let y=.2;y<dur-.2;y+=R(.25,.5))p.push([y,f*R(.85,1.2),.15]);
-      tonal(x,dur,f,p,22,9);tonal(x,dur,f*1.47,p.map(([a,b,c])=>[a,b*1.47,c]),22,5)};
-    const drill=(x,dur)=>{// electric drill, low body only: motor rumble that bogs under load, plus low chatter
+    out=s.o;
+    const pn=()=>{const n=ctx.createBufferSource();n.buffer=s.pb;n.loop=true;return n};
+    // soft noise hit: pink noise, gentle attack, smooth exponential tail
+    const hit=(x,dur,{type='lowpass',f=400,q=.8,gain=1,attack=.008}={})=>{
+      const n=pn(),fl=ctx.createBiquadFilter(),g=ctx.createGain();fl.type=type;fl.frequency.value=f;fl.Q.value=q;
+      g.gain.setValueAtTime(0,x);g.gain.linearRampToValueAtTime(gain,x+attack);g.gain.setTargetAtTime(0,x+attack,dur/3);
+      n.connect(fl).connect(g).connect(out);n.start(x,Math.random()*3);n.stop(x+attack+dur*1.5)};
+    const blow=(x,g)=>{hit(x,.35,{f:140,gain:g*2.4,attack:.006});hit(x,.18,{type:'bandpass',f:R(350,750),q:3,gain:g*1.6,attack:.007});hit(x,.25,{type:'bandpass',f:R(1200,2000),q:4,gain:g*.7,attack:.008})};
+    const band=(x,dur,f0,path,q,g,trem)=>{// moving noise band with a slow friction wobble
+      const n=pn(),bp=ctx.createBiquadFilter(),v=ctx.createGain();bp.type='bandpass';bp.Q.value=q;bp.frequency.setValueAtTime(f0,x);
+      path.forEach(([dt,fr,tc])=>bp.frequency.setTargetAtTime(fr,x+dt,tc));
+      v.gain.setValueAtTime(0,x);v.gain.linearRampToValueAtTime(g,x+.15);
+      if(trem)for(let y=.15;y<dur-.2;y+=R(.07,.16))v.gain.setTargetAtTime(g*R(.45,1),x+y,.03);
+      v.gain.setTargetAtTime(0,x+dur-.2,.06);
+      n.connect(bp).connect(v).connect(out);n.start(x,Math.random()*3);n.stop(x+dur+.4)};
+    const grind=(x,dur)=>{// metal scraping on metal
+      const f=R(1300,2400),p=[];for(let y=.2;y<dur-.2;y+=R(.25,.5))p.push([y,f*R(.85,1.2),.15]);
+      band(x,dur,f,p,6,4.5,true);band(x,dur,f*.55,p.map(([a,b,c])=>[a,b*.55,c]),5,3,true)};
+    const drill=(x,dur)=>{// low drill body: motor rumble that bogs under load, plus low chatter
       const top=R(140,190),p=[[0,top,.12]];for(let y=.4;y<dur-.3;y+=R(.2,.45))p.push([y,top*(P(.35)?R(.7,.85):R(.97,1.03)),.07]);p.push([dur-.25,70,.08]);
-      tonal(x,dur,70,p,8,7);
-      for(let y=x+.3;y<x+dur-.2;y+=R(.08,.14))burst(s.d,y,.09,{type:'lowpass',f:R(200,380),gain:R(.4,.7),attack:.012})};
+      band(x,dur,70,p,6,5,false);
+      for(let y=x+.3;y<x+dur-.2;y+=R(.08,.14))hit(y,.08,{f:R(200,380),gain:R(.5,.8),attack:.012})};
     const r=Math.random();let d;
     if(r<.05){d=R(1.2,2.5);drill(t,d)}
     else if(r<.17){// jackhammer, slow heavy blows
-      const n=Math.floor(R(4,12));let x=t;for(let i=0;i<n;i++){burst(out,x,.05,{type:'lowpass',f:R(600,1000),gain:R(.6,.9),attack:.003});thud(out,x,{gain:R(.4,.7),f:R(60,90)});x+=R(.18,.4)}d=x-t}
+      const n=Math.floor(R(4,12));let x=t;for(let i=0;i<n;i++){hit(x,.09,{f:R(500,800),gain:R(.9,1.3),attack:.008});hit(x,.2,{f:110,gain:R(.9,1.3),attack:.008});x+=R(.18,.4)}d=x-t}
     else if(r<.50){// violent hammer blows, 1–3 with uneven spacing
-      let x=t;const n=Math.floor(R(1,4));for(let i=0;i<n;i++){thud(s.d,x,{gain:R(1.2,1.8),f:R(50,80)});clang(x,R(1.2,1.8));x+=R(.4,1)}d=x-t}
+      let x=t;const n=Math.floor(R(1,4));for(let i=0;i<n;i++){blow(x,R(1.1,1.6));x+=R(.4,1)}d=x-t}
     else if(r<.80){d=R(.8,2.2);grind(t,d)}
     else if(r<.87){// dropped steel bouncing
-      let x=t,g=1.3;for(let i=0;i<5;i++){clang(x,g);x+=R(.1,.3)*(1-i*.15);g*=.6}d=x-t}
+      let x=t,g=1.2;for(let i=0;i<5;i++){blow(x,g);x+=R(.1,.3)*(1-i*.15);g*=.6}d=x-t}
     else if(r<.94){// scrap collapsing, low and heavy
-      for(let i=0;i<Math.floor(R(6,14));i++){const x=t+R(0,1);burst(out,x,R(.05,.1),{type:'lowpass',f:R(250,600),gain:R(.5,.9),attack:.004})}d=1}
-    else{clang(t,1.4);thud(out,t,{gain:.7,f:90});d=.2}
+      for(let i=0;i<Math.floor(R(6,14));i++)hit(t+R(0,1),R(.06,.12),{f:R(250,600),gain:R(.6,1),attack:.01});d=1}
+    else{blow(t,1.3);d=.25}
     return P(.35)?R(.05,d):d+R(0,.6);
   }}
 ];
