@@ -614,11 +614,14 @@ function fitBubble(){
   let fs=16;lines.forEach((t,i)=>{t.textContent=words[i].replace(/å/g,'a').replace(/Å/g,'A');t.setAttribute('font-size','16')});
   const wMax=Math.max(...lines.map(t=>t.getComputedTextLength()));if(wMax>0)fs=Math.min(17,16*54/wMax);
   cx.font=`400 ${fs*10}px "Lilita One"`;
-  const xh=(cx.measureText('a').actualBoundingBoxAscent||fs*5.3)/10,cap=(cx.measureText('H').actualBoundingBoxAscent||fs*7)/10;
+  const xh=(cx.measureText('a').actualBoundingBoxAscent||fs*5.3)/10,cap=(cx.measureText('H').actualBoundingBoxAscent||fs*7)/10,desc=Math.max(0,...words.map(w=>(cx.measureText(w.replace(/[åÅ]/g,'a')).actualBoundingBoxDescent||0)/10));
   const hasRing=words.some(w=>/[åÅ]/.test(w)),sw=fs*.15,r=fs*.17,gap=fs*.01;
-  const top=hasRing?Math.max(cap,xh+gap+2*r+sw):cap,lineGap=fs*.42,total=2*top+lineGap,y0=44-total/2;
+  const top=hasRing?Math.max(cap,xh+gap+2*r+sw):cap,lineGap=fs*.42+desc,total=2*top+lineGap+desc,y0=44-total/2;
   lines.forEach((t,i)=>{
     t.setAttribute('font-size',fs.toFixed(2));const base=y0+top+i*(top+lineGap);t.setAttribute('y',base.toFixed(2));
+    // centre on the ink, not the advance box (Lilita's ? has extra side bearing)
+    const m=cx.measureText(t.textContent),L=(m.actualBoundingBoxLeft||0)/10,R=(m.actualBoundingBoxRight||0)/10;
+    if(R>0){t.setAttribute('text-anchor','start');t.setAttribute('x',(50-(R-L)/2).toFixed(2))}
     [...words[i]].forEach((ch,k)=>{if(ch!=='å'&&ch!=='Å')return;
       const e=t.getExtentOfChar(k),c=document.createElementNS('http://www.w3.org/2000/svg','circle');
       const h=ch==='Å'?cap:xh;c.setAttribute('cx',(e.x+e.width/2).toFixed(2));c.setAttribute('cy',(base-h-gap-r-sw/2).toFixed(2));
