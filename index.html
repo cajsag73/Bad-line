@@ -152,7 +152,10 @@ h1{font-size:clamp(56px,18vw,130px);line-height:.85;white-space:nowrap;margin:0}
 .about-box h2{margin:0;font-family:var(--display);font-weight:700;font-size:26px;text-transform:uppercase}
 .about-body ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:8px;font-size:14.5px;line-height:1.45}
 .about-body b{color:var(--accent)}
-.about-close{position:fixed;z-index:11;background:var(--panel);border-color:var(--ink)}
+.about-close{position:fixed;z-index:11;background:var(--panel);border-color:var(--line);border-bottom:0;border-radius:6px 6px 0 0}
+.about-close::after{content:"";position:absolute;left:0;right:0;bottom:-2px;height:3px;background:var(--panel)}
+.about.tabbed{align-items:flex-start;justify-content:flex-end}
+.about.tabbed .about-box{border-top-right-radius:0}
 .credits{border-top:1.5px solid var(--line);padding-top:10px;display:flex;flex-direction:column;gap:3px;font-family:var(--mono);font-size:12.5px;color:var(--muted)}
 .credits a{color:var(--accent)}
 .credits .sel{color:var(--ink);user-select:all;-webkit-user-select:all}
@@ -595,7 +598,8 @@ const ABOUT={
  </ul>`};
 const about=document.getElementById('about');
 function placeClose(){const r=document.getElementById('aboutBtn').getBoundingClientRect(),c=document.getElementById('aboutClose');
-  c.style.top=r.top+'px';c.style.right=(document.documentElement.clientWidth-r.right)+'px';c.style.minWidth=r.width+'px';c.style.height=r.height+'px';about.style.paddingTop=(r.bottom+12)+'px'}
+  c.style.top=r.top+'px';c.style.right=(document.documentElement.clientWidth-r.right)+'px';c.style.minWidth=r.width+'px';c.style.height=r.height+'px';
+  about.classList.add('tabbed');about.style.paddingTop=(r.bottom-1.5)+'px';about.style.paddingRight=(document.documentElement.clientWidth-r.right)+'px'}
 function openAbout(){document.getElementById('aboutBody').innerHTML=ABOUT[lang];about.hidden=false;placeClose();document.getElementById('aboutClose').focus()}
 addEventListener('resize',()=>{if(!about.hidden)placeClose()});
 function closeAbout(){about.hidden=true;document.getElementById('aboutBtn').focus()}
