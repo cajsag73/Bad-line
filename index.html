@@ -646,7 +646,7 @@ function fitBubble(){
   lines.forEach((t,i)=>{t.textContent=words[i].replace(/å/g,'a').replace(/Å/g,'A')});
   cx.font=`400 ${fs*10}px "Lilita One"`;
   const xh=(cx.measureText('a').actualBoundingBoxAscent||fs*5.3)/10,cap=(cx.measureText('H').actualBoundingBoxAscent||fs*7)/10,desc=Math.max(0,...ref.map(w=>(cx.measureText(w.replace(/[åÅ]/g,'a')).actualBoundingBoxDescent||0)/10));
-  const hasRing=ref.some(w=>/[åÅ]/.test(w)),sw=fs*.17,r=fs*.25,gap=fs*.11;
+  const hasRing=ref.some(w=>/[åÅ]/.test(w)),sw=fs*.16,r=fs*.19,gap=fs*.04;
   const top=hasRing?Math.max(cap,xh+gap+2*r+sw):cap,lineGap=fs*.32+desc,total=2*top+lineGap+desc,y0=42-total/2;
   lines.forEach((t,i)=>{
     t.setAttribute('font-size',fs.toFixed(2));const base=y0+top+i*(top+lineGap);t.setAttribute('y',base.toFixed(2));
