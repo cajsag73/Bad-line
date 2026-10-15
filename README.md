@@ -1,27 +1,31 @@
-# Dålig täckning
-Soundboard för samtal du inte vill ha.
+# Bad Line (Dålig täckning)
+A soundboard for calls you don't want.
 
-Sex störningsljud som skapas live i webbläsaren med Web Audio, utan ljudfiler:
+Six interference sounds, generated live in the browser with the Web Audio API. No audio files:
 
-- **Hackig linje** – linjen hackar sönder i robotgröt, digitala smällar och tvär tystnad
-- **Tågkrasch** – ett tåg som kraschar i full fart, oavbrutet våld och skrynklande plåt
-- **Rymdstation** – digitala störningar och en sönderhackad utomjordisk röst
-- **Dödsmetall** – våldsamma attacker av distorsion utan takt
-- **Hagelstorm** – saker som krossas och bryts sönder, och ibland ett orkanvrål
-- **Byggarbetsplats** – hammarslag, metall mot metall, bilning och ibland en låg borrmaskin
+- **Choppy line** – the line breaks up into robot mush, digital bursts and sudden silence
+- **Train crash** – a train crashing at full speed: nonstop violence and crumpling sheet metal
+- **Space station** – digital interference and a shredded alien voice
+- **Death metal** – violent attacks of distortion with no tempo
+- **Hailstorm** – things getting smashed and torn apart, and now and then a hurricane roar
+- **Construction site** – hammer blows, metal on metal, a jackhammer and now and then a low drill
 
-Tryck på flera för att mixa. Ljuden växlar oregelbundet mellan starkt, svagt och tyst (utom tågkraschen, som aldrig ger upp). Under **Fejka avbrott** finns upptagetton och nätverksfelston som tystnar så fort du trycker på ett annat ljud. Tryck en gång till på ett ljud som är igång för att stoppa det. Knappen **Om** högst upp till höger förklarar hur allt fungerar.
+Tap several sounds to mix them. They shift irregularly between loud, quiet and silent, except the train crash, which never lets up. Tap a sound that is playing to stop it. Under **Fake a dropped call** there is a busy tone and a network error tone. They start the moment you tap them and stop as soon as you tap another sound. The **About** button in the top right explains everything.
 
-Ljudet går genom en kompressor och förstärkning anpassad för mobilhögtalare, så att det hörs tydligt i en annan telefon.
+The sound goes through a compressor and gain stage tuned for phone speakers, so it comes through clearly on another phone.
 
-## Språk
-Svenska och engelska (Bad Line) finns i samma app. Byt med flaggorna under rubriken. Valet sparas, och första gången väljs språk efter telefonens inställning.
+## Languages
+English and Swedish are in the same app. Switch with the flags under the title. The choice is saved, and the first time the app follows the phone's language.
 
-## Publicering
-Se [PUBLICERA.md](PUBLICERA.md) för steg för steg till Google Play. Butikstexter och grafik finns i `butik/`. Integritetspolicyn ligger i `integritet.html`.
+## Use
+Open `index.html` in a phone browser and hold the phone with the call close to the speaker. Sound can only start after a tap.
 
-## Använd
-Öppna `index.html` i mobilens webbläsare och håll telefonen med samtalet nära högtalaren. Ljud kan bara starta efter ett tryck.
+## Publishing
+See [PUBLICERA.md](PUBLICERA.md) (in Swedish) for step-by-step instructions for Google Play. Store texts and graphics are in `butik/`. The privacy policy is `integritet.html`.
 
-## Licens
-Appen är gratis och öppen källkod under [MIT-licensen](LICENSE). Typsnitten har SIL Open Font License, se `licenser/`.
+## Credits
+- Concept: Rickard Lundgren's mobile phone
+- Development: Cajsa Gustafsson
+
+## License
+Free and open source under the [MIT License](LICENSE). The fonts use the SIL Open Font License, see `licenser/`.
