@@ -116,7 +116,9 @@ body{height:100%;display:flex;flex-direction:column;gap:10px;overflow-y:auto;
 .flag:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 .logo{height:clamp(52px,16vw,74px);width:100%;display:block;order:3}
 .skull{order:2;width:clamp(30px,9vw,44px);height:auto;display:block;margin-right:-4px}
-h1{font-size:clamp(56px,18vw,130px);line-height:.85;white-space:nowrap;padding-right:var(--om-w,0px)}
+h1{font-size:clamp(56px,18vw,130px);line-height:.85;white-space:nowrap;margin:0}
+.title-row{display:flex;align-items:center;gap:var(--ic-gap,10px);padding-right:var(--om-w,0px);min-width:0}
+.appicon{height:var(--ic-h,48px);width:auto;flex:none;display:block}
 .eyebrow{color:var(--ink);font-weight:600;white-space:normal;line-height:1.3;min-width:0}
 .lede,.tips{display:none}
 .panel{padding:8px 12px;gap:4px}
@@ -162,7 +164,14 @@ h1{font-size:clamp(56px,18vw,130px);line-height:.85;white-space:nowrap;padding-r
   <header class="brand">
     <button type="button" class="about-btn" id="aboutBtn" data-i18n="about">Om</button>
     <div class="brand-text">
+      <div class="title-row">
       <h1><span data-i18n="t1">Dålig </span><span data-i18n="t2">täckning</span></h1>
+      <svg class="appicon" viewBox="8 14 84 76" aria-hidden="true">
+        <rect x="12" y="18" width="76" height="52" rx="12" fill="var(--skull)"/>
+        <path d="M26 66L22 86L44 68Z" fill="var(--skull)"/>
+        <g fill="var(--accent)" style="font-family:var(--display);font-weight:800;font-size:21px" text-anchor="middle"><text x="50" y="45" textLength="60" lengthAdjust="spacingAndGlyphs" data-i18n="bubble1">HALLÅ?</text><text x="50" y="65" textLength="60" lengthAdjust="spacingAndGlyphs" data-i18n="bubble2">HALLÅ?</text></g>
+      </svg>
+      </div>
       <div class="sub">
       <div class="langs" role="group" aria-label="Språk / Language">
         <button type="button" class="flag" data-lang="sv" aria-label="Svenska" aria-pressed="true"><svg viewBox="0 0 16 10" aria-hidden="true"><rect width="16" height="10" fill="#006AA7"/><rect x="5" width="2" height="10" fill="#FECC00"/><rect y="4" width="16" height="2" fill="#FECC00"/></svg></button>
@@ -519,9 +528,9 @@ function dropCall(mode,btn){
 }
 
 const I18N={
- sv:{title:'Dålig täckning',eyebrow:'Soundboard för samtal du inte vill ha',t1:'Dålig ',t2:'täckning',vol:'Volym',drop:'Fejka avbrott',busy:'Upptagetton',sit:'Nätverksfel',sitS:'tre stigande toner',about:'Om',aboutTitle:'Så funkar det',close:'Stäng',madeBy:'Gjord av',contact:'Kontakt',privacy:'Integritetspolicy',version:'Version',disclaimer:'Appen spelar bara upp ljud i högtalaren. Den påverkar inte telefonnätet, samtal eller andra enheter.',
+ sv:{title:'Dålig täckning',eyebrow:'Soundboard för samtal du inte vill ha',t1:'Dålig ',t2:'täckning',vol:'Volym',drop:'Fejka avbrott',busy:'Upptagetton',sit:'Nätverksfel',sitS:'tre stigande toner',bubble1:'HALLÅ?',bubble2:'HALLÅ?',about:'Om',aboutTitle:'Så funkar det',close:'Stäng',madeBy:'Gjord av',contact:'Kontakt',privacy:'Integritetspolicy',version:'Version',disclaimer:'Appen spelar bara upp ljud i högtalaren. Den påverkar inte telefonnätet, samtal eller andra enheter.',
    silent:'Tyst',pick:'Välj ett eller flera ljud',onair:'Sänder nu',mixing:n=>`Mixar ${n} ljud`,dropping:'Avbrott',breaking:'Samtalet bryts…',ch:'KANAL',live:'SÄNDER'},
- en:{title:'Bad Line',eyebrow:"Soundboard for calls you don't want",t1:'Bad ',t2:'Line',vol:'Volume',drop:'Fake a dropped call',busy:'Busy tone',sit:'Network error',sitS:'three rising tones',about:'About',aboutTitle:'How it works',close:'Close',madeBy:'Made by',contact:'Contact',privacy:'Privacy policy',version:'Version',disclaimer:'The app only plays sound through the speaker. It does not affect the phone network, calls or other devices.',
+ en:{title:'Bad Line',eyebrow:"Soundboard for calls you don't want",t1:'Bad ',t2:'Line',vol:'Volume',drop:'Fake a dropped call',busy:'Busy tone',sit:'Network error',sitS:'three rising tones',bubble1:'HELLO?',bubble2:'HELLO?',about:'About',aboutTitle:'How it works',close:'Close',madeBy:'Made by',contact:'Contact',privacy:'Privacy policy',version:'Version',disclaimer:'The app only plays sound through the speaker. It does not affect the phone network, calls or other devices.',
    silent:'Silent',pick:'Pick one or more sounds',onair:'On air',mixing:n=>`Mixing ${n} sounds`,dropping:'Dropping',breaking:'Call breaking up…',ch:'CHANNEL',live:'ON AIR'}
 };
 const SCENE_EN={"tackning": {"name": "Choppy line", "what": "The line breaks up into robot mush, digital bursts and sudden silence.", "spec": "Voice codec in 20 ms frames"}, "tag": {"name": "Train crash", "what": "A train crashes at full speed. Cars crumple, sheet metal folds and steel tears apart.", "spec": "4,000 tonnes of metal at 120 km/h"}, "rymd": {"name": "Space station", "what": "Digital interference and a shredded alien voice talking in the background.", "spec": "TDMA buzz 217 Hz · 3-bit voice"}, "metall": {"name": "Death metal", "what": "Violent attacks of distortion, bass blasts and screams that come and go.", "spec": "Tempo: none · Mercy: none"}, "storm": {"name": "Hailstorm", "what": "Things get smashed and torn apart at full force.", "spec": "Roof tiles · sheet metal · glass · timber"}, "bygg": {"name": "Construction site", "what": "Jackhammer, power drill, violent hammer blows and metal grinding on metal. Completely irregular.", "spec": "No rhythm. No finesse."}};
@@ -598,10 +607,13 @@ document.getElementById('vol').addEventListener('input',e=>{if(master)master.gai
 // Scale the app name to fill the banner width beside the About button
 function fitEyebrow(){
   const h=document.querySelector('h1'),box=document.querySelector('.brand-text'),om=document.getElementById('aboutBtn');if(!h||!box)return;
-  const omW=om?om.offsetWidth+12:0;h.style.setProperty('--om-w',omW+'px');
+  const row=h.parentElement,omW=om?om.offsetWidth+12:0;row.style.setProperty('--om-w',omW+'px');
   h.style.fontSize='100px';
   const r=document.createRange();r.selectNodeContents(h);const tw=r.getBoundingClientRect().width;
-  const avail=box.clientWidth-omW;if(tw>0)h.style.fontSize=Math.min(170,Math.max(24,100*avail/tw)).toFixed(1)+'px';
+  // icon is ~1.1 cap heights tall (font size * 0.8), aspect 84:76, plus a gap of 0.1 font size
+  const per=100+0.95*84/76*100+14, avail=box.clientWidth-omW;
+  const fs=Math.min(170,Math.max(24,100*avail/(tw+(per-100))));
+  h.style.fontSize=fs.toFixed(1)+'px';row.style.setProperty('--ic-h',(fs*.95).toFixed(1)+'px');row.style.setProperty('--ic-gap',(fs*.14).toFixed(1)+'px');
 }
 setLang(lang);
 fitEyebrow();window.addEventListener('resize',fitEyebrow);
