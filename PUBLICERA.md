@@ -55,7 +55,7 @@ En mall finns i `.well-known/assetlinks.json` i det här repot.
 
 | Fråga | Svar |
 |---|---|
-| Integritetspolicy | `https://cajsag73.github.io/bad-line/integritet.html` |
+| Integritetspolicy | `https://cajsag73.github.io/integritet.html` |
 | Annonser | Nej |
 | Åtkomst till appen | All funktionalitet är tillgänglig utan särskild åtkomst |
 | Innehållsklassificering | Fyll i formuläret. Inget våld, inget sexuellt innehåll, ingen interaktion mellan användare, inga köp. |

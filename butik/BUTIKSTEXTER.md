@@ -94,7 +94,7 @@ Bad Line is a humor app. It only plays sound through the speaker and does not af
 | Taggar | Humor, Soundboard |
 | Licens | MIT (öppen källkod) |
 | Kontakt-e-post | cajsa.g.art@gmail.com |
-| Integritetspolicy | https://cajsag73.github.io/bad-line/integritet.html |
+| Integritetspolicy | https://cajsag73.github.io/integritet.html |
 | Pris | Gratis |
 | Innehåller annonser | Nej |
 
