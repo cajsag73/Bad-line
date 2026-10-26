@@ -4,6 +4,7 @@
   "short_name": "Dålig täckning",
   "description": "Soundboard för samtal du inte vill ha. Störningsljud att spela i bakgrunden under ett samtal.",
   "lang": "sv",
+  "dir": "ltr",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
@@ -14,6 +15,7 @@
     "entertainment",
     "music"
   ],
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "icons/icon-192.png",
@@ -32,6 +34,22 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "screenshots/1-mixa.png",
+      "sizes": "780x1688",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Blanda störningsljud"
+    },
+    {
+      "src": "screenshots/2-om.png",
+      "sizes": "780x1688",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Om appen"
     }
   ]
 }
