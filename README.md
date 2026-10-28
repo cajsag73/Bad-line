@@ -1,4 +1,4 @@
-# Bad Line (Dålig täckning)
+# Bad Line
 A soundboard for calls you don't want.
 
 Six interference sounds, generated live in the browser with the Web Audio API. No audio files:

@@ -1,50 +1,9 @@
 # Butikstexter för Google Play
 
-Klistra in i Play Console under **Butiksnärvaro → Huvudbutiksinformation**. Standardspråk: svenska (sv-SE). Lägg till engelska (en-US) som översättning.
+Klistra in i Play Console under **Butiksnärvaro → Huvudbutiksinformation**. Standardspråk: engelska (en-US). Lägg till svenska (sv-SE) som översättning.
 
-## Svenska (sv-SE)
+## English (en-US), standardspråk
 
-**Appnamn** (max 30 tecken)
-```
-Dålig täckning
-```
-
-**Kort beskrivning** (max 80 tecken)
-```
-Gratis störningsljud under samtal – hackig linje, tågkrasch, hagel och mer.
-```
-
-**Fullständig beskrivning** (max 4000 tecken)
-```
-Någon ringer som du inte orkar prata med? Dålig täckning är en soundboard med störningsljud som du spelar i bakgrunden, så att samtalet låter omöjligt att föra.
-
-Sex ljud som skapas live, så de aldrig låter likadant två gånger:
-• Hackig linje – linjen hackar sönder i robotgröt, digitala smällar och tvär tystnad
-• Tågkrasch – 4000 ton metall i 120 km/h, oavbrutet
-• Rymdstation – digitala störningar och en sönderhackad utomjordisk röst
-• Dödsmetall – våldsamma attacker av distorsion utan takt och utan nåd
-• Hagelstorm – saker som krossas, och ibland ett orkanvrål
-• Byggarbetsplats – hammarslag, metall mot metall och bilning
-
-Mixa flera ljud samtidigt. Ljuden växlar oregelbundet mellan starkt, svagt och tyst, precis som riktiga störningar.
-
-Fejka avbrott: avsluta med upptagetton eller nätverksfelston, och lägg på.
-
-Så använder du den: håll telefonen med samtalet nära högtalaren på den enhet där Dålig täckning spelar, eller sätt samtalet på högtalare. Ljudet är förstärkt för att höras tydligt i en annan telefon.
-
-• Helt gratis
-• Öppen källkod: https://github.com/cajsag73/bad-line
-• Ingen reklam
-• Inga köp i appen
-• Inget konto
-• Samlar inte in några uppgifter
-• Fungerar utan internet
-• Svenska och engelska
-
-Dålig täckning är en humorapp. Den spelar bara upp ljud i högtalaren och påverkar inte telefonnätet, samtal eller andra enheter.
-```
-
-## English (en-US)
 
 **App name** (max 30 characters)
 ```
@@ -86,6 +45,49 @@ How to use it: hold the phone with the call close to the speaker of the device p
 Bad Line is a humor app. It only plays sound through the speaker and does not affect the phone network, calls or other devices.
 ```
 
+## Svenska (sv-SE)
+
+
+**Appnamn** (max 30 tecken)
+```
+Bad Line: Fejka dålig täckning
+```
+
+**Kort beskrivning** (max 80 tecken)
+```
+Gratis störningsljud under samtal – hackig linje, tågkrasch, hagel och mer.
+```
+
+**Fullständig beskrivning** (max 4000 tecken)
+```
+Någon ringer som du inte orkar prata med? Bad Line är en soundboard med störningsljud som du spelar i bakgrunden, så att samtalet låter omöjligt att föra.
+
+Sex ljud som skapas live, så de aldrig låter likadant två gånger:
+• Hackig linje – linjen hackar sönder i robotgröt, digitala smällar och tvär tystnad
+• Tågkrasch – 4000 ton metall i 120 km/h, oavbrutet
+• Rymdstation – digitala störningar och en sönderhackad utomjordisk röst
+• Dödsmetall – våldsamma attacker av distorsion utan takt och utan nåd
+• Hagelstorm – saker som krossas, och ibland ett orkanvrål
+• Byggarbetsplats – hammarslag, metall mot metall och bilning
+
+Mixa flera ljud samtidigt. Ljuden växlar oregelbundet mellan starkt, svagt och tyst, precis som riktiga störningar.
+
+Fejka avbrott: avsluta med upptagetton eller nätverksfelston, och lägg på.
+
+Så använder du den: håll telefonen med samtalet nära högtalaren på den enhet där Bad Line spelar, eller sätt samtalet på högtalare. Ljudet är förstärkt för att höras tydligt i en annan telefon.
+
+• Helt gratis
+• Öppen källkod: https://github.com/cajsag73/bad-line
+• Ingen reklam
+• Inga köp i appen
+• Inget konto
+• Samlar inte in några uppgifter
+• Fungerar utan internet
+• Svenska och engelska
+
+Bad Line är en humorapp. Den spelar bara upp ljud i högtalaren och påverkar inte telefonnätet, samtal eller andra enheter.
+```
+
 ## Övriga uppgifter
 
 | Fält | Värde |
@@ -104,4 +106,4 @@ Bad Line is a humor app. It only plays sound through the speaker and does not af
 |---|---|
 | `app-ikon-512.png` | Appikon (512 × 512) |
 | `feature-graphic-1024x500.png` | Funktionsgrafik (1024 × 500) |
-| Skärmbilder | Minst 2 telefonskärmbilder. Ta dem på din egen telefon när appen är installerad, gärna en med flera ljud igång och en med Om-rutan öppen. |
+| `skarmbilder/en/` och `skarmbilder/sv/` | Två telefonskärmbilder per språk: huvudsidan med ljud igång och Om-rutan |

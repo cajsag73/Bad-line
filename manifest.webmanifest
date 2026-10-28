@@ -1,9 +1,9 @@
 {
   "id": "/bad-line/",
-  "name": "Dålig täckning",
-  "short_name": "Dålig täckning",
-  "description": "Soundboard för samtal du inte vill ha. Störningsljud att spela i bakgrunden under ett samtal.",
-  "lang": "sv",
+  "name": "Bad Line",
+  "short_name": "Bad Line",
+  "description": "Soundboard for calls you don't want. Noise to play in the background during a call.",
+  "lang": "en",
   "dir": "ltr",
   "start_url": "./",
   "scope": "./",
@@ -38,18 +38,18 @@
   ],
   "screenshots": [
     {
-      "src": "screenshots/1-mixa.png",
+      "src": "screenshots/1-mix.png",
       "sizes": "780x1688",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "Blanda störningsljud"
+      "label": "Mix interference sounds"
     },
     {
-      "src": "screenshots/2-om.png",
+      "src": "screenshots/2-about.png",
       "sizes": "780x1688",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "Om appen"
+      "label": "About the app"
     }
   ]
 }

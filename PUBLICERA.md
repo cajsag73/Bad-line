@@ -1,4 +1,4 @@
-# Så ger du ut Dålig täckning på Google Play
+# Så ger du ut Bad Line på Google Play
 
 Appen är en webbapp. Den läggs ut gratis på GitHub Pages, och PWABuilder gör en Play-fil (`.aab`) som öppnar den som en vanlig app i helskärm. Du behöver ingen Android Studio.
 
@@ -26,8 +26,8 @@ Fördelen är att ändringar du pushar hit når alla användare automatiskt, uta
 | Fält | Värde |
 |---|---|
 | Package ID | `io.github.cajsag73.badline` (går aldrig att ändra) |
-| App name | `Dålig täckning` |
-| Short name / Launcher name | `Dålig täckning` |
+| App name | `Bad Line` |
+| Short name / Launcher name | `Bad Line` |
 | App version | `1.0.0` |
 | App version code | `1` |
 | Host | `cajsag73.github.io` |
@@ -44,7 +44,7 @@ Fördelen är att ändringar du pushar hit når alla användare automatiskt, uta
 
 **Spara signeringsnyckeln** (`signing.keystore`) och filen `signing-key-info.txt` med lösenorden på ett säkert ställe, till exempel i en lösenordshanterare och en molnmapp. Utan dem kan du aldrig uppdatera appen.
 
-I zippen finns bland annat `Dålig täckning.aab` (den laddar du upp till Play) och `assetlinks.json` (fingeravtrycket behövs i steg 3).
+I zippen finns bland annat `Bad Line.aab` (den laddar du upp till Play) och `assetlinks.json` (fingeravtrycket behövs i steg 3).
 
 ## 3. Ta bort adressfältet
 Android visar ett adressfält överst i appen tills det har bekräftat att webbplatsen är din. Bekräftelsen ligger i repot `cajsag73.github.io`, i filen `.well-known/assetlinks.json`.
@@ -57,7 +57,7 @@ Android visar ett adressfält överst i appen tills det har bekräftat att webbp
 Se även `domanrot/README.md`.
 
 ## 4. Skapa appen i Play Console
-1. **Skapa app**. Namn: `Dålig täckning`. Standardspråk: svenska. Typ: app. Pris: gratis.
+1. **Skapa app**. Namn: `Bad Line`. Standardspråk: engelska (en-US). Typ: app. Pris: gratis.
 2. Gå igenom **Appinnehåll**:
 
 | Fråga | Svar |
@@ -70,7 +70,7 @@ Se även `domanrot/README.md`.
 | Datasäkerhet | Samlar inte in data och delar inte data |
 | Myndighetsapp, ekonomi, hälsa, nyheter | Nej |
 
-3. Under **Huvudbutiksinformation**, klistra in texterna från `butik/BUTIKSTEXTER.md` och ladda upp ikonen och funktionsgrafiken från mappen `butik/`, och de två skärmbilderna från `butik/skarmbilder/`.
+3. Under **Huvudbutiksinformation**, klistra in texterna från `butik/BUTIKSTEXTER.md` och ladda upp ikonen och funktionsgrafiken från mappen `butik/`, och skärmbilderna från `butik/skarmbilder/en/` (engelska) och `butik/skarmbilder/sv/` (svenska).
 
 ## 5. Sluten testning: 12 testare i 14 dagar
 Nya personliga konton måste testa appen med minst 12 testare under 14 dagar i följd innan den kan släppas publikt. Kontrollera de exakta kraven i Play Console, eftersom de har ändrats tidigare.

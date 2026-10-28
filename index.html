@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="sv">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#12161C">
-<meta name="description" content="Soundboard för samtal du inte vill ha. Störningsljud att spela i bakgrunden under ett samtal.">
+<meta name="description" content="Soundboard for calls you don't want. Noise to play in the background during a call.">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
@@ -174,7 +174,7 @@ h1{font-size:clamp(56px,18vw,130px);line-height:.85;white-space:nowrap;margin:0}
     <button type="button" class="about-btn" id="aboutBtn" data-i18n="about">Om</button>
     <div class="brand-text">
       <div class="title-row">
-      <h1><span data-i18n="t1">Dålig </span><span data-i18n="t2">täckning</span></h1>
+      <h1><span data-i18n="t1">Bad </span><span data-i18n="t2">Line</span></h1>
       <svg class="appicon" viewBox="8 14 84 76" aria-hidden="true">
         <path d="M31 60L20 86L48 69Z" fill="#FFFFFF"/>
         <ellipse cx="50" cy="44" rx="40" ry="27" fill="#FFFFFF"/>
@@ -553,15 +553,15 @@ function dropCall(mode,btn){
 }
 
 const I18N={
- sv:{title:'Dålig täckning',eyebrow:'Soundboard för samtal du inte vill ha',t1:'Dålig ',t2:'täckning',vol:'Volym',drop:'Fejka avbrott',busy:'Upptagetton',sit:'Nätverksfel',sitS:'tre stigande toner',bubble1:'Hallå?',bubble2:'Hallå?',about:'Om',aboutTitle:'Så funkar det',close:'Stäng',concept:'Koncept',conceptBy:'Rickard Lundgrens mobiltelefon',dev:'Utveckling',contact:'Kontakt',privacy:'Integritetspolicy',free:'Gratis, inga köp i appen och öppen källkod',version:'Version',disclaimer:'Appen spelar bara upp ljud i högtalaren. Den påverkar inte telefonnätet, samtal eller andra enheter.',
+ sv:{title:'Bad Line',eyebrow:'Soundboard för samtal du inte vill ha',t1:'Bad ',t2:'Line',vol:'Volym',drop:'Fejka avbrott',busy:'Upptagetton',sit:'Nätverksfel',sitS:'tre stigande toner',bubble1:'Hallå?',bubble2:'Hallå?',about:'Om',aboutTitle:'Så funkar det',close:'Stäng',concept:'Koncept',conceptBy:'Rickard Lundgrens mobiltelefon',dev:'Utveckling',contact:'Kontakt',privacy:'Integritetspolicy',free:'Gratis, inga köp i appen och öppen källkod',version:'Version',disclaimer:'Appen spelar bara upp ljud i högtalaren. Den påverkar inte telefonnätet, samtal eller andra enheter.',
    silent:'Tyst',pick:'Välj ett eller flera ljud',onair:'Sänder nu',mixing:n=>`Mixar ${n} ljud`,dropping:'Avbrott',breaking:'Samtalet bryts…',ch:'KANAL',live:'SÄNDER'},
  en:{title:'Bad Line',eyebrow:"Soundboard for calls you don't want",t1:'Bad ',t2:'Line',vol:'Volume',drop:'Fake a dropped call',busy:'Busy tone',sit:'Network error',sitS:'three rising tones',bubble1:'Hello?',bubble2:'Hello?',about:'About',aboutTitle:'How it works',close:'Close',concept:'Concept',conceptBy:"Rickard Lundgren's mobile phone",dev:'Development',contact:'Contact',privacy:'Privacy policy',free:'Free, no in-app purchases and open source',version:'Version',disclaimer:'The app only plays sound through the speaker. It does not affect the phone network, calls or other devices.',
    silent:'Silent',pick:'Pick one or more sounds',onair:'On air',mixing:n=>`Mixing ${n} sounds`,dropping:'Dropping',breaking:'Call breaking up…',ch:'CHANNEL',live:'ON AIR'}
 };
 const SCENE_EN={"tackning": {"name": "Choppy line", "what": "The line breaks up into robot mush, digital bursts and sudden silence.", "spec": "Voice codec in 20 ms frames"}, "tag": {"name": "Train crash", "what": "A train crashes at full speed. Cars crumple, sheet metal folds and steel tears apart.", "spec": "4,000 tonnes of metal at 120 km/h"}, "rymd": {"name": "Space station", "what": "Digital interference and a shredded alien voice talking in the background.", "spec": "TDMA buzz 217 Hz · 3-bit voice"}, "metall": {"name": "Death metal", "what": "Violent attacks of distortion, bass blasts and screams that come and go.", "spec": "Tempo: none · Mercy: none"}, "storm": {"name": "Hailstorm", "what": "Things get smashed and torn apart at full force.", "spec": "Roof tiles · sheet metal · glass · timber"}, "bygg": {"name": "Construction site", "what": "Jackhammer, power drill, violent hammer blows and metal grinding on metal. Completely irregular.", "spec": "No rhythm. No finesse."}};
 scenes.forEach(sc=>{sc.i18n={sv:{name:sc.name,what:sc.what,spec:sc.spec},en:SCENE_EN[sc.id]}});
-let lang='sv';
-try{const v=localStorage.getItem('lang');if(v==='sv'||v==='en')lang=v;else if(!/^sv\b/i.test(navigator.language||'sv'))lang='en'}catch(e){}
+let lang='en';
+try{const v=localStorage.getItem('lang');if(v==='sv'||v==='en')lang=v;else if(/^sv\b/i.test(navigator.language||''))lang='sv'}catch(e){}
 const T=k=>I18N[lang][k];
 const grid=document.getElementById('grid');
 scenes.forEach((sc,i)=>{
