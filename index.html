@@ -352,10 +352,6 @@ const scenes=[
   }},
  {id:'rymd',name:'Rymdstation',what:'Digitala störningar, trasig dataström och en sönderhackad utomjordisk röst som pratar i bakgrunden.',spec:'Avstånd: 400 km · Mottagning: ingen',
   setup(out,nodes,t0){
-    // Plasma hiss: noise through a slowly drifting resonance, always there, swelling and fading
-    const pn=noiseSrc(),plp=ctx.createBiquadFilter(),pbp=ctx.createBiquadFilter(),pg=ctx.createGain();
-    plp.type='lowpass';plp.frequency.value=3500;pbp.type='highpass';pbp.frequency.value=300;pbp.Q.value=.5;pg.gain.value=.05;
-    pn.connect(plp).connect(pbp).connect(pg).connect(out);pn.start();nodes.push(pn);
     // Radar echo bus: pulses come back as a fading train of weaker, duller copies
     const ein=ctx.createGain(),dl=ctx.createDelay(1),fb=ctx.createGain(),elp=ctx.createBiquadFilter();
     dl.delayTime.value=.23;fb.gain.value=.42;elp.type='lowpass';elp.frequency.value=2500;
@@ -368,7 +364,7 @@ const scenes=[
       sum.connect(ring).connect(vc).connect(f).connect(vg).connect(out);vo.start();rm.start();nodes.push(vo,rm);
       return{vo,fm,rm,vg,lvl,shift,vn:t0+R(.2,1.2),left:Math.floor(R(4,12))}};
     const voices=[mkVoice(1,1,8000),mkVoice(.75,.8,3000),mkVoice(.5,1.25,2200)];
-    return{pg,plp,ein,dl,voices};
+    return{ein,dl,voices};
   },
   step(out,t,s){
     // Schedule the aliens' syllables ahead, each on its own clock, so they talk over each other
@@ -384,9 +380,6 @@ const scenes=[
       a.vn+=len*R(1,1.3);
       if(--a.left<=0){a.left=Math.floor(R(4,14));a.vn+=R(.15,.7)}
     }
-    // The plasma drifts all the time
-    s.plp.frequency.setTargetAtTime(R(1800,5000),t,.6);
-    s.pg.gain.setTargetAtTime(P(.25)?R(.2,.4):R(.06,.16),t,R(.2,.8));
     const pulse=(x,g,f)=>{burst(s.ein,x,R(.006,.012),{type:'highpass',f,gain:g*1.8,attack:.0008});burst(s.ein,x,.02,{f:f*.7,q:1.2,gain:g*.8,attack:.001})};
     const r=Math.random();
     if(r<.24){// over-the-horizon radar: hard tapping at ~10 Hz with echoes
@@ -402,9 +395,8 @@ const scenes=[
     if(r<.84){// bow shock: a roaring whoosh, falling as the plasma wall passes
       const d=R(1,2.2);burst(out,t,d,{type:'lowpass',f:R(900,1400),q:.5,gain:R(.6,.9),attack:R(.2,.5)});
       burst(out,t+R(.1,.4),d*.8,{type:'lowpass',f:R(300,600),gain:.6,attack:.3});return d*R(.5,.9)}
-    if(r<.92){// plasma surge: the hiss jumps up and breaks into crackle
-      const d=R(.5,1.2);s.pg.gain.setTargetAtTime(.35,t,.05);s.pg.gain.setTargetAtTime(.05,t+d,.2);
-      clicks(out,t+d*.3,Math.floor(R(4,10)),.5);return d}
+    if(r<.92){// crackle
+      clicks(out,t,Math.floor(R(4,10)),.5);return R(.3,.6)}
     return R(.2,.6);
   }},
  {id:'metall',name:'Dödsmetall',what:'Våldsamma attacker av distorsion, bastryck och skrik som kommer och går.',spec:'Takt: ingen · Nåd: ingen',
