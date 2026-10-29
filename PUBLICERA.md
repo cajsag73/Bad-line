@@ -18,38 +18,26 @@ Fördelen är att ändringar du pushar hit når alla användare automatiskt, uta
 3. Google verifierar din identitet, och ibland även en Android-telefon. Det kan ta några dagar.
 4. Som utvecklarnamn skriver du **Cajsa Gustafsson**, samma som i appens Om-ruta.
 
-## 2. Skapa Play-filen med PWABuilder
-1. Gå till **pwabuilder.com**, skriv in `https://cajsag73.github.io/bad-line/` och tryck **Start**.
-2. Rapportkortet ska visa manifest och service worker som godkända. Varningar om valfria saker (till exempel widgets eller share target) kan du strunta i.
-3. Tryck **Package for stores**, välj **Android** och sedan **Generate Package**. Öppna **All Settings** och fyll i:
+## 2. Skapa Play-filen (bygget på GitHub)
+Repot har ett eget bygge som gör Play-filen med Bubblewrap, samma verktyg som PWABuilder använder. Paket-ID är `io.github.cajsag73.badline` och appen riktar sig mot Android 16 (API 36), som Google Play kräver.
 
-| Fält | Värde |
-|---|---|
-| Package ID | `io.github.cajsag73.badline` (går aldrig att ändra) |
-| App name | `Bad Line` |
-| Short name / Launcher name | `Bad Line` |
-| App version | `1.0.0` |
-| App version code | `1` |
-| Host | `cajsag73.github.io` |
-| Start URL | `/bad-line/` |
-| Display mode | Standalone |
-| Status bar / nav bar color | `#12161C` |
-| Splash screen color | `#12161C` |
-| Notification delegation | Av |
-| Location delegation | Av |
-| Google Play billing | Av (inga köp i appen) |
-| Signing key | **Create new**. Fyll i ditt namn, "Cajsa Gustafsson" som organisation och landskod `SE`. |
+**En gång:** skapa ett långt lösenord (minst 20 tecken) i din lösenordshanterare. Gå sedan till **github.com/cajsag73/bad-line → Settings → Secrets and variables → Actions → New repository secret**:
+- **Name:** `ANDROID_KEY_PASSWORD`
+- **Secret:** lösenordet
 
-4. Tryck **Download Package** och spara zip-filen.
+**Varje gång du vill ha en ny Play-fil:**
+1. Gå till **github.com/cajsag73/bad-line/actions**, välj **Android package** och tryck **Run workflow**.
+2. Fyll i version (till exempel `1.0.0`) och version code (`1` första gången, sedan ett högre heltal för varje uppladdning) och tryck **Run workflow**.
+3. Efter några minuter: öppna körningen och ladda ner **Bad-Line-…** under *Artifacts*. Zippen innehåller `Bad Line.aab` (till Play), `Bad Line.apk` (för att testa direkt på telefonen) och `assetlinks.json`.
 
-**Spara signeringsnyckeln** (`signing.keystore`) och filen `signing-key-info.txt` med lösenorden på ett säkert ställe, till exempel i en lösenordshanterare och en molnmapp. Utan dem kan du aldrig uppdatera appen.
+Första gången skapas uppladdningsnyckeln och sparas i `android/upload-key.p12`, skyddad av lösenordet. Fingeravtrycket hamnar i `android/upload-key-fingerprint.txt`. Tappa inte bort lösenordet. Utan det kan du inte bygga nya versioner, och då måste du be Google om en ny uppladdningsnyckel.
 
-I zippen finns bland annat `Bad Line.aab` (den laddar du upp till Play) och `assetlinks.json` (fingeravtrycket behövs i steg 3).
+PWABuilder fungerar också (pwabuilder.com → Android, Package ID `io.github.cajsag73.badline`), men det paketet får en annan nyckel. Välj ett av sätten och håll dig till det.
 
 ## 3. Ta bort adressfältet
 Android visar ett adressfält överst i appen tills det har bekräftat att webbplatsen är din. Bekräftelsen ligger i repot `cajsag73.github.io`, i filen `.well-known/assetlinks.json`.
 
-1. Öppna `assetlinks.json` i PWABuilder-zippen och kopiera fingeravtrycket (det som ser ut som `AB:CD:12:...`).
+1. Fingeravtrycket för uppladdningsnyckeln står i `android/upload-key-fingerprint.txt` (och i `assetlinks.json` i zippen).
 2. När du har laddat upp `.aab`-filen i Play Console (steg 5), gå till **Test och lansering → Appintegritet → Appsignering** och kopiera **SHA-256-certifikatfingeravtrycket** för appsigneringsnyckeln.
 3. Skicka båda till Claude, eller ersätt platshållarna i `cajsag73.github.io/.well-known/assetlinks.json` själv.
 4. Kontrollera att https://cajsag73.github.io/.well-known/assetlinks.json visar filen.
