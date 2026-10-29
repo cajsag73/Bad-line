@@ -1,5 +1,5 @@
 // Offline support: cache the app shell on install, serve cache-first, keep fonts once fetched.
-const CACHE='badline-v13';
+const CACHE='badline-v14';
 const SHELL=['./','./index.html','./integritet.html','./manifest.webmanifest','./icons/icon-192-v2.png','./icons/icon-512-v2.png','./icons/icon-maskable-512-v2.png'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(SHELL)).then(()=>self.skipWaiting()))});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});
