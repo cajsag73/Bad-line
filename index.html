@@ -305,7 +305,7 @@ function crushCurve(steps){const n=2048,c=new Float32Array(n);for(let i=0;i<n;i+
 function clicks(out,t,n,gain=.6){for(let i=0;i<n;i++)burst(out,t+R(0,.25),.004,{type:'highpass',f:R(400,2500),gain:gain*R(.4,1),attack:.0005})}
 
 const scenes=[
- {id:'tackning',name:'Hackig linje',what:'Linjen hackar sönder i robotgröt, digitala smällar och tvär tystnad.',spec:'Talkodek i 20 ms-ramar',
+ {id:'tackning',name:'Hackig linje',what:'Linjen hackar sönder i robotgröt, digitala smällar och tvär tystnad.',spec:'Täckning: 1 streck av 5',
   setup(out,nodes){return{bed:bed(out,nodes,{f:1200,q:.5,gain:.03})}},
   step(out,t,s){
     const r=Math.random(),F=.02;
@@ -350,17 +350,23 @@ const scenes=[
     else{hit(t,1.5);hit(t+R(.05,.15),1.3);thud(s.d,t,{gain:1.4,f:55})}
     return R(.1,.32);
   }},
- {id:'rymd',name:'Rymdstation',what:'Digitala störningar och en sönderhackad utomjordisk röst som pratar i bakgrunden.',spec:'TDMA-surr 217 Hz · 3-bitars röst',
+ {id:'rymd',name:'Rymdstation',what:'Digitala störningar, modemskrik och en sönderhackad utomjordisk röst som pratar i bakgrunden.',spec:'Avstånd: 400 km · Mottagning: ingen',
   setup(out,nodes,t0){
-    // GSM-style buzz: noise chopped by a 217 Hz square wave
-    const ns=noiseSrc(),hp=ctx.createBiquadFilter(),chop=ctx.createGain(),bz=ctx.createGain();
-    hp.type='highpass';hp.frequency.value=900;chop.gain.value=0;bz.gain.value=0;
+    const loop=b=>{const s=ctx.createBufferSource();s.buffer=b;s.loop=true;return s};
+    // Sample-and-hold static at a low sample rate, quantized to a few levels: stepped, aliased, digital
+    const snh=(hold,lv)=>{const n=ctx.sampleRate*2,b=ctx.createBuffer(1,n,ctx.sampleRate),d=b.getChannelData(0);let v=0;
+      for(let i=0;i<n;i++){if(i%hold===0)v=Math.round((Math.random()*2-1)*lv)/lv*.7;d[i]=v}return b};
+    // Dial-up modem: two square oscillators through a phone-band filter
+    const mo=ctx.createOscillator(),mo2=ctx.createOscillator();mo.type=mo2.type='square';
+    const mbp=ctx.createBiquadFilter();mbp.type='bandpass';mbp.frequency.value=1700;mbp.Q.value=.7;
+    const mg=ctx.createGain(),mg2=ctx.createGain();mg.gain.value=mg2.gain.value=0;
+    mo.connect(mbp);mo2.connect(mg2).connect(mbp);mbp.connect(mg).connect(out);mo.start();mo2.start();nodes.push(mo,mo2);
+    // Crushed static, rate jumping frame by frame
+    const cs=loop(snh(12,2)),cg=ctx.createGain();cg.gain.value=0;cs.connect(cg).connect(out);cs.start();nodes.push(cs);
+    // GSM buzz: coarse static chopped by a 217 Hz square wave
+    const bs=loop(snh(3,1)),chop=ctx.createGain(),bz=ctx.createGain();chop.gain.value=0;bz.gain.value=0;
     const sq=ctx.createOscillator();sq.type='square';sq.frequency.value=217;sq.connect(chop.gain);
-    ns.connect(hp).connect(chop).connect(bz).connect(out);ns.start();sq.start();nodes.push(ns,sq);
-    // Crushed data stream: noise through a jumping filter and a 2-bit quantizer
-    const ds=noiseSrc(),dfl=ctx.createBiquadFilter(),cr=ctx.createWaveShaper(),dg=ctx.createGain();
-    dfl.type='bandpass';dfl.Q.value=3;dfl.frequency.value=1500;cr.curve=crushCurve(2);dg.gain.value=0;
-    ds.connect(dfl).connect(cr).connect(dg).connect(out);ds.start();nodes.push(ds);
+    bs.connect(chop).connect(bz).connect(out);bs.start();sq.start();nodes.push(bs,sq);
     // Alien voice: glottal saw -> three formant filters -> ring modulator -> 3-bit crusher -> gate
     const vo=ctx.createOscillator();vo.type='sawtooth';vo.frequency.value=140;
     const sum=ctx.createGain();sum.gain.value=1;
@@ -368,7 +374,7 @@ const scenes=[
     const ring=ctx.createGain();ring.gain.value=0;const rm=ctx.createOscillator();rm.frequency.value=90;rm.connect(ring.gain);
     const vc=ctx.createWaveShaper();vc.curve=crushCurve(3);const vg=ctx.createGain();vg.gain.value=0;
     sum.connect(ring).connect(vc).connect(vg).connect(out);vo.start();rm.start();nodes.push(vo,rm);
-    return{bz,dg,dfl,vo,fm,rm,vg,vn:t0+R(.2,.8),left:Math.floor(R(3,9))};
+    return{mo,mo2,mg,mg2,cs,cg,bz,vo,fm,rm,vg,vn:t0+R(.2,.8),left:Math.floor(R(3,9))};
   },
   step(out,t,s){
     // Schedule the alien's syllables ahead on their own clock
@@ -384,15 +390,34 @@ const scenes=[
       s.vn+=len*R(1,1.3);
       if(--s.left<=0){s.left=Math.floor(R(3,10));s.vn+=R(.25,1.1)}
     }
+    // Crushed static: rate jumps in frames, sometimes layered under the modem
+    const crush=(x,d,lvl)=>{for(let y=x;y<x+d;y+=R(.02,.08)){s.cs.playbackRate.setValueAtTime(R(.08,1.5),y);s.cg.gain.setValueAtTime(P(.15)?0:R(.6,1)*lvl,y)}s.cg.gain.setValueAtTime(0,x+d)};
     const r=Math.random();
-    if(r<.3){const d=R(.3,1.6);s.bz.gain.setValueAtTime(R(.3,.8),t);s.bz.gain.setValueAtTime(0,t+d);return P(.5)?d:R(.1,d)}
-    if(r<.58){const d=R(.2,1.2);s.dg.gain.setValueAtTime(R(.08,.22),t);
-      for(let x=t;x<t+d;x+=R(.012,.035))s.dfl.frequency.setValueAtTime(R(300,6000),x);
-      s.dg.gain.setValueAtTime(0,t+d);return P(.5)?d:R(.05,d)}
-    if(r<.68){const d=R(.15,.6);s.bz.gain.setValueAtTime(0,t);s.dg.gain.setValueAtTime(0,t);return d}
-    if(r<.84){let x=t;const n=Math.floor(R(4,12)),len=R(.015,.05),f=R(800,4000);for(let i=0;i<n;i++){burst(out,x,len,{f,q:2,gain:.5,attack:.001});x+=len*R(1,1.6)}return x-t}
-    if(r<.92){clicks(out,t,Math.floor(R(3,10)),.6);return .2}
-    return R(.05,.4);
+    if(r<.2){// FSK data: random bits between two tones
+      const d=R(.3,1.3),baud=[300,600,1200][Math.floor(R(0,3))],lo=R(980,1300),hi=lo+R(600,1100);s.mg.gain.setValueAtTime(R(.25,.42),t);
+      for(let x=t;x<t+d;x+=1/baud)s.mo.frequency.setValueAtTime(P(.5)?lo:hi,x);s.mg.gain.setValueAtTime(0,t+d);
+      if(P(.45))crush(t,d,.14);return d}
+    if(r<.32){// handshake: a sweep fighting a jumping second tone
+      const d=R(.4,1);s.mg.gain.setValueAtTime(.34,t);s.mg2.gain.setValueAtTime(.24,t);
+      s.mo.frequency.setValueAtTime(R(300,600),t);s.mo.frequency.exponentialRampToValueAtTime(R(2400,3400),t+d);
+      for(let x=t;x<t+d;x+=R(.02,.06))s.mo2.frequency.setValueAtTime(R(600,3000),x);
+      s.mg.gain.setValueAtTime(0,t+d);s.mg2.gain.setValueAtTime(0,t+d);return d}
+    if(r<.52){// crushed static on its own
+      const d=R(.3,1.3);crush(t,d,.3);return P(.5)?d:R(.1,d)}
+    if(r<.64){// GSM buzz, now and then with carrier dropouts on top
+      const d=R(.3,1.4);s.bz.gain.setValueAtTime(R(.3,.5),t);s.bz.gain.setValueAtTime(0,t+d);
+      if(P(.4)){s.mo.frequency.setValueAtTime(R(2000,2250),t);s.mg.gain.setValueAtTime(.22,t);
+        for(let x=t+R(.1,.3);x<t+d;x+=R(.15,.4)){s.mg.gain.setValueAtTime(0,x);s.mg.gain.setValueAtTime(.22,x+R(.01,.04))}s.mg.gain.setValueAtTime(0,t+d)}
+      return d}
+    if(r<.74){// frozen buffer: the same fragment repeating
+      const d=R(.2,.5),rate=R(.1,.6);s.cg.gain.setValueAtTime(.3,t);
+      for(let x=t;x<t+d;x+=.045){s.cs.playbackRate.setValueAtTime(rate,x);s.cg.gain.setValueAtTime(0,x+.04);s.cg.gain.setValueAtTime(.3,x+.045)}
+      s.cg.gain.setValueAtTime(0,t+d);return d}
+    if(r<.84){// squeal burst: the modem losing sync
+      const d=R(.1,.35);s.mg.gain.setValueAtTime(.38,t);for(let x=t;x<t+d;x+=.008)s.mo.frequency.setValueAtTime(R(500,4000),x);s.mg.gain.setValueAtTime(0,t+d);
+      crush(t+d,R(.05,.2),.25);return d+R(0,.2)}
+    // dead air
+    s.mg.gain.setValueAtTime(0,t);s.cg.gain.setValueAtTime(0,t);s.bz.gain.setValueAtTime(0,t);return R(.2,.7);
   }},
  {id:'metall',name:'Dödsmetall',what:'Våldsamma attacker av distorsion, bastryck och skrik som kommer och går.',spec:'Takt: ingen · Nåd: ingen',
   setup(out,nodes,t0){return{d:distBus(out,2000,7000,.55),b:distBus(out,300,350,1.1),wild:true,until:t0+R(1.5,3)}},
@@ -561,7 +586,7 @@ const I18N={
  en:{title:'Bad Line',eyebrow:"Soundboard for calls you don't want",t1:'Bad ',t2:'Line',vol:'Volume',drop:'Fake a dropped call',busy:'Busy tone',sit:'Network error',sitS:'three rising tones',bubble1:'Hello?',bubble2:'Hello?',about:'About',aboutTitle:'How it works',close:'Close',concept:'Concept',conceptBy:"Rickard Lundgren's mobile phone",dev:'Development',contact:'Contact',privacy:'Privacy policy',free:'Free, no in-app purchases and open source',version:'Version',disclaimer:'The app only plays sound through the speaker. It does not affect the phone network, calls or other devices.',
    silent:'Silent',pick:'Pick one or more sounds',onair:'On air',mixing:n=>`Mixing ${n} sounds`,dropping:'Dropping',breaking:'Call breaking up…',ch:'CHANNEL',live:'ON AIR'}
 };
-const SCENE_EN={"tackning": {"name": "Choppy line", "what": "The line breaks up into robot mush, digital bursts and sudden silence.", "spec": "Voice codec in 20 ms frames"}, "tag": {"name": "Train crash", "what": "A train crashes at full speed. Cars crumple, sheet metal folds and steel tears apart.", "spec": "4,000 tonnes of metal at 120 km/h"}, "rymd": {"name": "Space station", "what": "Digital interference and a shredded alien voice talking in the background.", "spec": "TDMA buzz 217 Hz · 3-bit voice"}, "metall": {"name": "Death metal", "what": "Violent attacks of distortion, bass blasts and screams that come and go.", "spec": "Tempo: none · Mercy: none"}, "storm": {"name": "Hailstorm", "what": "Things get smashed and torn apart at full force.", "spec": "Roof tiles · sheet metal · glass · timber"}, "bygg": {"name": "Construction site", "what": "Jackhammer, power drill, violent hammer blows and metal grinding on metal. Completely irregular.", "spec": "No rhythm. No finesse."}};
+const SCENE_EN={"tackning": {"name": "Choppy line", "what": "The line breaks up into robot mush, digital bursts and sudden silence.", "spec": "Signal: 1 bar out of 5"}, "tag": {"name": "Train crash", "what": "A train crashes at full speed. Cars crumple, sheet metal folds and steel tears apart.", "spec": "4,000 tonnes of metal at 120 km/h"}, "rymd": {"name": "Space station", "what": "Digital interference, modem screech and a shredded alien voice talking in the background.", "spec": "Distance: 400 km · Reception: none"}, "metall": {"name": "Death metal", "what": "Violent attacks of distortion, bass blasts and screams that come and go.", "spec": "Tempo: none · Mercy: none"}, "storm": {"name": "Hailstorm", "what": "Things get smashed and torn apart at full force.", "spec": "Roof tiles · sheet metal · glass · timber"}, "bygg": {"name": "Construction site", "what": "Jackhammer, power drill, violent hammer blows and metal grinding on metal. Completely irregular.", "spec": "No rhythm. No finesse."}};
 scenes.forEach(sc=>{sc.i18n={sv:{name:sc.name,what:sc.what,spec:sc.spec},en:SCENE_EN[sc.id]}});
 let lang='en';
 try{const v=localStorage.getItem('lang');if(v==='sv'||v==='en')lang=v;else if(/^sv\b/i.test(navigator.language||''))lang='sv'}catch(e){}
