@@ -14,7 +14,7 @@ on:
         default: '1'
         required: true
   push:
-    branches: [android-build]
+    branches: [android-build, android-release]
 
 permissions:
   contents: write
@@ -52,6 +52,15 @@ jobs:
               echo "::error::ANDROID_KEY_PASSWORD must be at least 20 characters."; exit 1
             fi
             echo "MODE=release" >> "$GITHUB_ENV"
+          elif [ "$GITHUB_REF" = "refs/heads/android-release" ]; then
+            if [ -f android/upload-key.p12 ]; then
+              echo "::error::An upload key already exists. Build updates with Run workflow and the ANDROID_KEY_PASSWORD secret."; exit 1
+            fi
+            # First release built for the owner: random password, handed over encrypted.
+            echo "MODE=release" >> "$GITHUB_ENV"
+            echo "AUTO=1" >> "$GITHUB_ENV"
+            P=$(openssl rand -hex 16); echo "::add-mask::$P"
+            echo "KEY_PASSWORD=$P" >> "$GITHUB_ENV"
           else
             echo "MODE=test" >> "$GITHUB_ENV"
             echo "KEY_PASSWORD=test-$(openssl rand -hex 16)" >> "$GITHUB_ENV"
@@ -132,13 +141,27 @@ jobs:
           if [ "$NEW_KEY" = "1" ]; then cp work/upload-key.p12 android/upload-key.p12; fi
           cp work/fingerprint.txt android/upload-key-fingerprint.txt
           git add android/upload-key.p12 android/upload-key-fingerprint.txt
-          git diff --cached --quiet || { git commit -m "Android upload key fingerprint ($VERSION_NAME)"; git push; }
+          git diff --cached --quiet || { git commit -m "Android upload key and fingerprint ($VERSION_NAME)"; git push origin HEAD:main; }
 
       - uses: actions/upload-artifact@v4
         with:
           name: ${{ env.MODE == 'release' && format('Bad-Line-{0}', env.VERSION_NAME) || 'TEST-do-not-upload' }}
           path: out/
           retention-days: 30
+
+      - name: Hand over the first release
+        if: env.AUTO == '1'
+        run: |
+          printf '%s' "$KEY_PASSWORD" | openssl pkeyutl -encrypt -pubin -inkey android/handoff-public-key.pem \
+            -pkeyopt rsa_padding_mode:oaep -pkeyopt rsa_oaep_md:sha256 -out out/password.enc
+          rm -f out/*.idsig
+          cp -r out /tmp/release-out
+          git fetch -q origin main && git checkout -q --orphan release-out FETCH_HEAD
+          git rm -rq --cached . 
+          rm -rf release && mkdir release && cp /tmp/release-out/* release/
+          git add -f release
+          git commit -qm "Bad Line $VERSION_NAME ($VERSION_CODE) release files"
+          git push -q -f origin HEAD:android-release-output
 
       - name: Publish build log (for debugging)
         if: always()
