@@ -15,6 +15,7 @@ const {TwaManifest, TwaGenerator, ConsoleLog} = require('@bubblewrap/core');
   m.display = 'standalone';
   m.orientation = 'portrait';
   m.shortcuts = [];
+  m.minSdkVersion = 24;
   const out = process.argv[2];
   await new TwaGenerator().createTwaProject(out, m, new ConsoleLog('generate'));
   await m.saveToFile(out + '/twa-manifest.json');

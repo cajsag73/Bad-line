@@ -92,7 +92,7 @@ jobs:
           cp ../../android/generate.js .
           KEYSTORE_PATH=../upload-key.p12 node generate.js ../twa 2>&1 | tee -a ../build.log
           cd ../twa
-          sed -i -E 's/targetSdkVersion [0-9]+/targetSdkVersion 36/; s/compileSdkVersion [0-9]+/compileSdkVersion 36/' app/build.gradle
+          sed -i -E 's/targetSdkVersion [0-9]+/targetSdkVersion 36/; s/compileSdkVersion [0-9]+/compileSdkVersion 36/; s/minSdkVersion [0-9]+/minSdkVersion 24/' app/build.gradle
           grep -nE 'SdkVersion|applicationId|versionCode|versionName' app/build.gradle | tee -a ../build.log
 
       - name: Build
