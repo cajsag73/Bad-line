@@ -357,10 +357,10 @@ const scenes=[
     const snh=(hold,lv)=>{const n=ctx.sampleRate*2,b=ctx.createBuffer(1,n,ctx.sampleRate),d=b.getChannelData(0);let v=0;
       for(let i=0;i<n;i++){if(i%hold===0)v=Math.round((Math.random()*2-1)*lv)/lv*.7;d[i]=v}return b};
     // Dial-up modem: two square oscillators through a phone-band filter
-    const mo=ctx.createOscillator(),mo2=ctx.createOscillator();mo.type=mo2.type='square';
+    const mo=ctx.createOscillator();mo.type='square';
     const mbp=ctx.createBiquadFilter();mbp.type='bandpass';mbp.frequency.value=1700;mbp.Q.value=.7;
-    const mg=ctx.createGain(),mg2=ctx.createGain();mg.gain.value=mg2.gain.value=0;
-    mo.connect(mbp);mo2.connect(mg2).connect(mbp);mbp.connect(mg).connect(out);mo.start();mo2.start();nodes.push(mo,mo2);
+    const mg=ctx.createGain();mg.gain.value=0;
+    mo.connect(mbp).connect(mg).connect(out);mo.start();nodes.push(mo);
     // Crushed static, rate jumping frame by frame
     const cs=loop(snh(12,2)),cg=ctx.createGain();cg.gain.value=0;cs.connect(cg).connect(out);cs.start();nodes.push(cs);
     // GSM buzz: coarse static chopped by a 217 Hz square wave
@@ -374,7 +374,7 @@ const scenes=[
     const ring=ctx.createGain();ring.gain.value=0;const rm=ctx.createOscillator();rm.frequency.value=90;rm.connect(ring.gain);
     const vc=ctx.createWaveShaper();vc.curve=crushCurve(3);const vg=ctx.createGain();vg.gain.value=0;
     sum.connect(ring).connect(vc).connect(vg).connect(out);vo.start();rm.start();nodes.push(vo,rm);
-    return{mo,mo2,mg,mg2,cs,cg,bz,vo,fm,rm,vg,vn:t0+R(.2,.8),left:Math.floor(R(3,9))};
+    return{mo,mg,cs,cg,bz,vo,fm,rm,vg,vn:t0+R(.2,.8),left:Math.floor(R(3,9))};
   },
   step(out,t,s){
     // Schedule the alien's syllables ahead on their own clock
@@ -393,15 +393,10 @@ const scenes=[
     // Crushed static: rate jumps in frames, sometimes layered under the modem
     const crush=(x,d,lvl)=>{for(let y=x;y<x+d;y+=R(.02,.08)){s.cs.playbackRate.setValueAtTime(R(.08,1.5),y);s.cg.gain.setValueAtTime(P(.15)?0:R(.6,1)*lvl,y)}s.cg.gain.setValueAtTime(0,x+d)};
     const r=Math.random();
-    if(r<.2){// FSK data: random bits between two tones
-      const d=R(.3,1.3),baud=[300,600,1200][Math.floor(R(0,3))],lo=R(980,1300),hi=lo+R(600,1100);s.mg.gain.setValueAtTime(R(.25,.42),t);
-      for(let x=t;x<t+d;x+=1/baud)s.mo.frequency.setValueAtTime(P(.5)?lo:hi,x);s.mg.gain.setValueAtTime(0,t+d);
-      if(P(.45))crush(t,d,.14);return d}
-    if(r<.32){// handshake: a sweep fighting a jumping second tone
-      const d=R(.4,1);s.mg.gain.setValueAtTime(.34,t);s.mg2.gain.setValueAtTime(.24,t);
+    if(r<.24){// handshake sweep, smeared by crushed static
+      const d=R(.4,1);s.mg.gain.setValueAtTime(.3,t);
       s.mo.frequency.setValueAtTime(R(300,600),t);s.mo.frequency.exponentialRampToValueAtTime(R(2400,3400),t+d);
-      for(let x=t;x<t+d;x+=R(.02,.06))s.mo2.frequency.setValueAtTime(R(600,3000),x);
-      s.mg.gain.setValueAtTime(0,t+d);s.mg2.gain.setValueAtTime(0,t+d);return d}
+      s.mg.gain.setValueAtTime(0,t+d);crush(t,d,.18);return d}
     if(r<.52){// crushed static on its own
       const d=R(.3,1.3);crush(t,d,.3);return P(.5)?d:R(.1,d)}
     if(r<.64){// GSM buzz, now and then with carrier dropouts on top
